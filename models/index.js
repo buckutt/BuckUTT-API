@@ -67,7 +67,7 @@ function getRelationModelByAlias(modelName, alias) {
     return modelAliases[modelName][alias];
 }
 
-// sequelize.sync({ force: true });
+sequelize.sync(); //{ force: true } to override
 
 module.exports = _.extend({
     sequelize: sequelize,
