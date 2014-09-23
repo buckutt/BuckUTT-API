@@ -1,0 +1,23 @@
+{
+    /* BDD table names doesn't respect camelcase */
+    "camelcase" : false,
+    "multistr" : true,
+    "maxlen": 500,
+    "indent": 4,
+    "quotmark": "single",
+    "maxlen": 80,
+    "trailing": true,
+    "curly": true,
+    "undef" : true,
+    "unused" : false,
+    "node" : true,
+    "globals" : {
+        /* MOCHA */
+        "describe" : false,
+        "it" : false,
+        "before" : false,
+        "beforeEach" : false,
+        "after" : false,
+        "afterEach" : false
+    }
+}

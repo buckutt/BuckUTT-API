@@ -1,0 +1,15 @@
+{
+    "port": 8081,
+    "secret": "thisIsASecret",
+    "mysql": {
+        "host": "localhost",
+        "username": "root",
+        "password": "",
+        "port": "3306",
+        "database": "buckutt_dev",
+        "debug" : true
+    },
+    "log" : {
+        "level": "debug"
+    }
+}
