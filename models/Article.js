@@ -19,7 +19,8 @@ module.exports = function(sequelize, DataTypes) {
         },
 
         stock: {
-            type: DataTypes.INTEGER
+            type: DataTypes.INTEGER,
+            defaultValue: -1
         },
 
         isSingle: {
