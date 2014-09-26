@@ -35,6 +35,9 @@ module.exports = function(sequelize, DataTypes) {
                 Period.hasMany(models.Price, {
                     as: 'Prices'
                 });
+                Period.hasMany(models.UsersGroups, { 
+                    as: 'UsersGroups'
+                });
             }
         }
     });

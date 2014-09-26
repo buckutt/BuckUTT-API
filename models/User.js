@@ -53,9 +53,13 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                User.hasMany(models.MeanOfLogin, { 
-                    as: 'MeanOfLogins', 
+                User.hasMany(models.MeanOfLogin, {
+                    as: 'MeanOfLogins',
                     through: models.MeanOfLoginsUsers
+                });
+                User.hasMany(models.Group, { 
+                    as: 'Groups', 
+                    through: models.UsersGroups
                 });
             }
         }
