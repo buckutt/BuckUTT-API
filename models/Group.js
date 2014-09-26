@@ -34,6 +34,9 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Group.belongsTo(models.Fundation);
+                Group.hasMany(models.Price, {
+                    as: 'Prices'
+                });
             }
         }
     });

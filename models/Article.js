@@ -38,13 +38,19 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Article.belongsTo(models.Fundation);
+
                 Article.hasMany(Article, { 
                     as: 'Parents', 
                     through: models.ArticlesLinks 
                 });
+
                 Article.hasMany(models.Point, { 
                     as: 'SellingPlaces', 
                     through: models.ArticlesPoints 
+                });
+
+                Article.hasMany(models.Price, {
+                    as: 'Prices'
                 });
             }
         }

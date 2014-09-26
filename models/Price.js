@@ -2,23 +2,15 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-    var Period = sequelize.define('Period', {
+    var Price = sequelize.define('Price', {
         id: { 
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         }, 
 
-        name: { 
-            type: DataTypes.STRING
-        },
-
-        startDate: { 
-            type: DataTypes.DATE
-        },
-
-        endDate: {
-            type: DataTypes.DATE
+        credit: { 
+            type: DataTypes.INTEGER
         },
 
         isRemoved: {
@@ -31,13 +23,12 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Period.belongsTo(models.Fundation);
-                Period.hasMany(models.Price, {
-                    as: 'Prices'
-                });
+                Price.belongsTo(models.Article);
+                Price.belongsTo(models.Group);
+                Price.belongsTo(models.Period);
             }
         }
     });
 
-    return Period;
+    return Price;
 };
