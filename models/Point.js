@@ -27,6 +27,9 @@ module.exports = function(sequelize, DataTypes) {
                     as: 'Products', 
                     through: models.ArticlesPoints 
                 });
+                Point.hasMany(models.UsersRights, { 
+                    as: 'UsersRights'
+                });
             }
         }
     });

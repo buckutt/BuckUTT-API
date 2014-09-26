@@ -61,6 +61,10 @@ module.exports = function(sequelize, DataTypes) {
                     as: 'Groups', 
                     through: models.UsersGroups
                 });
+                User.hasMany(models.Right, { 
+                    as: 'Rights', 
+                    through: models.UsersRights
+                });
             }
         }
     });

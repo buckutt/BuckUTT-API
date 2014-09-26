@@ -26,6 +26,9 @@ module.exports = function(sequelize, DataTypes) {
                 Fundation.hasMany(models.Period);
                 Fundation.hasMany(models.Group);
                 Fundation.hasMany(models.Article);
+                Fundation.hasMany(models.UsersRights, { 
+                    as: 'UsersRights'
+                });
             }
         }
     });

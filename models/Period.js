@@ -38,6 +38,9 @@ module.exports = function(sequelize, DataTypes) {
                 Period.hasMany(models.UsersGroups, { 
                     as: 'UsersGroups'
                 });
+                Period.hasMany(models.UsersRights, { 
+                    as: 'UsersRights'
+                });
             }
         }
     });
