@@ -22,7 +22,22 @@ module.exports = function(req, res, next) {
             res.json(200);
         })
         .error(function(err) {
-            var error = new APIError(req, 
+            var error;
+
+            if (err.name === 'SequelizeForeignKeyConstraintError') {
+                error = new APIError(req, 
+                    'ForeignKey constraint error', 
+                    'BAD_FOREIGN_KEY',
+                    500,
+                    { 
+                        error: err
+                    }
+                );   
+
+                return next(error); 
+            }
+
+            error = new APIError(req, 
                 'An uncatched error has been throwed', 
                 'UNKNOWN_ERROR',
                 500,
