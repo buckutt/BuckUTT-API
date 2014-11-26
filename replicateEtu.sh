@@ -60,7 +60,7 @@ echo "   npm run-script sendpwd"
 echo "Done."
 
 echo "Removing sql drop file"
-#rm drop.sql
+rm drop.sql
 echo "  rm drop.sql"
 echo "Done."
 
