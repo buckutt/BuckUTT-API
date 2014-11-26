@@ -7,7 +7,6 @@
  */
 
 var express     = require('express');
-var jwt         = require('jsonwebtoken');
 var libs        = require('../../libs');
 var config      = libs.configManager;
 var log         = libs.logManager(module);
