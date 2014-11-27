@@ -32,15 +32,15 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Reload.belongsTo(models.ReloadType);
-                Purchase.belongsTo(models.User, {
+                Reload.belongsTo(models.User, {
                     as: 'Buyer',
                     foreignKey: 'BuyerId'
                 });
-                Purchase.belongsTo(models.User, {
+                Reload.belongsTo(models.User, {
                     as: 'Operator',
                     foreignKey: 'OperatorId'
                 });
-                Purchase.belongsTo(models.Point);
+                Reload.belongsTo(models.Point);
             }
         }
     });
