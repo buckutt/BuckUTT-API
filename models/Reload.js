@@ -3,21 +3,21 @@
 //Shotgun !
 module.exports = function(sequelize, DataTypes) {
     var Reload = sequelize.define('Reload', {
-        id: { 
+        id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
-        }, 
+        },
 
-        date: { 
+        date: {
             type: DataTypes.DATE
         },
 
-        credit: { 
+        credit: {
             type: DataTypes.INTEGER
         },
 
-        trace: { 
+        trace: {
             type: DataTypes.STRING
         },
 
@@ -32,6 +32,15 @@ module.exports = function(sequelize, DataTypes) {
         classMethods: {
             associate: function(models) {
                 Reload.belongsTo(models.ReloadType);
+                Purchase.belongsTo(models.User, {
+                    as: 'Buyer',
+                    foreignKey: 'BuyerId'
+                });
+                Purchase.belongsTo(models.User, {
+                    as: 'Operator',
+                    foreignKey: 'OperatorId'
+                });
+                Purchase.belongsTo(models.Point);
             }
         }
     });
