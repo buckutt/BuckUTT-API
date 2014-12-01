@@ -61,7 +61,7 @@ function copyTable ($table, $ltable, $fields) {
     while ($row = $response->fetch(PDO::FETCH_ASSOC)) {
         # Preparing the insert query
         $reqStr = "INSERT IGNORE INTO " . $ltable . " (" . $newFieldsJoined . ") VALUES (" . $pdoFlags . ")";
-        # Let"s make the associative array PDO needs
+        # Let's make the associative array PDO needs
         # new fields as keys, old fields" values as data
         $prepareData = array_combine($newFields, $row);
 
