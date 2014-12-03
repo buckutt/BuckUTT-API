@@ -12,8 +12,8 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING
         },
 
-        mode: { 
-            type: DataTypes.STRING
+        type: {
+            type: DataTypes.ENUM('', 'digits', 'boxes')
         },
 
         isRemoved: {

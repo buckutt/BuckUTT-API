@@ -74,7 +74,7 @@ module.exports = function(req, res, next) {
             query_.where[key] = value;
         }
     }
-    console.log(query_);
+
     req.query = query_;
     next();
 };
