@@ -67,7 +67,7 @@ function getRelationModelByAlias(modelName, alias) {
     return modelAliases[modelName][alias];
 }
 
-sequelize.sync({ force: true }); //{ force: true } to override
+sequelize.sync({ force: config.get('override')}); //{ force: true } to override
 
 module.exports = _.extend({
     sequelize: sequelize,

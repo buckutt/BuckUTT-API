@@ -1,6 +1,7 @@
 {
     "port": 8081,
     "secret": "thisIsASecret",
+    "override": false,
     "mysql": {
         "host": "localhost",
         "username": "root",
