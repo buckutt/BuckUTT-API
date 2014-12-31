@@ -13,31 +13,34 @@ var libs           = require('./libs');
 var config         = libs.configManager;
 var log            = libs.logManager(module);
 var middlewares    = require('./middlewares');
-var models         = require('./models');
-
+var modelsAsync    = require('./models');
 
 var app = express()
-    .use(bodyParser.json())
-    .use(morgan('dev'))
-    .use(methodOverride())
-    .use(express.static(path.join(__dirname, './public')));
-
+  .use(bodyParser.json())
+  .use(morgan('dev'))
+  .use(methodOverride())
+  .use(express.static(path.join(__dirname, './public')));
 
 var router = require('./routes/routes');
 
-models.sequelize
-    .authenticate()
-    .success(function() {
-        app
-            .use('/', router)
-            .use(middlewares.pageNotFound)
-            .use(middlewares.internalError)
-            .listen(config.get('port'));
+modelsAsync().then(function (models) {
+  var seeder = require('./seeder')(models);
 
-        log.info('Server is listening on %d', config.get('port')); 
+  models.sequelize
+    .authenticate()
+    .then(seeder)
+    .then(function() {
+      app
+        .use('/', router)
+        .use(middlewares.pageNotFound)
+        .use(middlewares.internalError)
+        .listen(config.get('port'));
+
+      log.info('Server is listening on %d', config.get('port')); 
     })
-    .error(function(err) {
-        throw(err);
+    .catch(function(err) {
+      throw new Error(err);
     });
 
+});
 module.exports = app;

@@ -7,6 +7,7 @@
 var fs        = require('fs');
 var path      = require('path');
 var Sequelize = require('sequelize');
+var Promise   = require('bluebird');
 var _         = require('underscore');
 var config    = require('../libs').configManager;
 
@@ -18,7 +19,7 @@ var sequelize = new Sequelize(
         host: config.get('mysql').host,
         port: config.get('mysql').port,
         dialect: 'mariadb',
-        logging: console.log
+        logging: (config.get('mysql').debug) ? console.log : false
     }
 );
 
@@ -67,10 +68,20 @@ function getRelationModelByAlias(modelName, alias) {
     return modelAliases[modelName][alias];
 }
 
-sequelize.sync({ force: config.get('override')}); //{ force: true } to override
+module.exports = function () {
+  return new Promise(function (resolve, reject) {
 
-module.exports = _.extend({
-    sequelize: sequelize,
-    Sequelize: Sequelize,
-    getRelationModelByAlias: getRelationModelByAlias
-}, db);
+    sequelize
+      .sync({ force: config.get('override')})
+      .then(function () {
+        resolve(_.extend({
+            sequelize: sequelize,
+            Sequelize: Sequelize,
+            getRelationModelByAlias: getRelationModelByAlias
+        }, db));
+      })
+      .catch(function (e) {
+        reject(e);
+      });
+  });
+};
