@@ -15,6 +15,7 @@ module.exports = function (models) {
       var files =
         fs
           .readdirSync(__dirname)
+          .sort()
           .filter(function(file) {
               return (file.indexOf('.') !== 0) && (file !== 'index.js');
           })
