@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
-        }, 
+        },
 
         password: { 
             type: DataTypes.STRING
@@ -53,14 +53,14 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                User.hasMany(models.MeanOfLogin, {
+                User.belongsToMany(models.MeanOfLogin, {
                     through: models.MeanOfLoginsUsers
                 });
-                User.hasMany(models.Group, { 
+                User.belongsToMany(models.Group, { 
                     as: 'Groups', 
                     through: models.UsersGroups
                 });
-                User.hasMany(models.Right, { 
+                User.belongsToMany(models.Right, { 
                     as: 'Rights', 
                     through: models.UsersRights
                 });

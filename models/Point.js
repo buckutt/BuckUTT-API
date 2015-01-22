@@ -23,7 +23,7 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Point.hasMany(models.Article, { 
+                Point.belongsToMany(models.Article, { 
                     as: 'Products', 
                     through: models.ArticlesPoints 
                 });

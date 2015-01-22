@@ -40,19 +40,19 @@ module.exports = function(sequelize, DataTypes) {
             associate: function(models) {
                 Article.belongsTo(models.Fundation);
 
-                Article.hasMany(Article, { 
+                Article.belongsToMany(Article, { 
                     as: 'Parents', 
                     foreignKey: 'ArticleId',
                     through: models.ArticlesLinks 
                 });
 
-                Article.hasMany(Article, { 
+                Article.belongsToMany(Article, { 
                     as: 'Articles', 
                     foreignKey: 'ParentId',
                     through: models.ArticlesLinks 
                 });
 
-                Article.hasMany(models.Point, { 
+                Article.belongsToMany(models.Point, { 
                     as: 'SellingPlaces', 
                     through: models.ArticlesPoints 
                 });

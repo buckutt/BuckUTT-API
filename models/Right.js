@@ -32,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Right.hasMany(models.User, { 
+                Right.belongsToMany(models.User, { 
                     as: 'Users', 
                     through: models.UsersRights
                 });
