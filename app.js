@@ -24,7 +24,7 @@ var app = express()
 var router = require('./routes/routes');
 
 modelsAsync().then(function (models) {
-  var seeder = require('./seeder')(models);
+  var seeder = require('./seeder')(models, config.get('seed'));
 
   models.sequelize
     .authenticate()

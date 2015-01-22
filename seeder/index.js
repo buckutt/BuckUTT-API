@@ -7,11 +7,15 @@
 var fs        = require('fs');
 var path      = require('path');
 var Promise   = require('bluebird');
-var config    = require('../libs').configManager;
 
-module.exports = function (models) {
+module.exports = function (models, doSeed) {
   return function () {
     return new Promise(function (resolve, reject) {
+      if (!doSeed) {
+        resolve();
+        return;
+      }
+
       var files =
         fs
           .readdirSync(__dirname)
