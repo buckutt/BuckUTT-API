@@ -30,7 +30,15 @@ modelsAsync().then(function (models) {
     .authenticate()
     .then(seeder)
     .then(function() {
+
+      // Sets the this variable to models in the first middleware so that
+      // the next middlewares do not have to promisify all the models
+      var modelsSetter = (function () {
+          return middlewares.setModels.bind(models);
+      }());
+
       app
+        .use(modelsSetter)
         .use('/', router)
         .use(middlewares.pageNotFound)
         .use(middlewares.internalError)

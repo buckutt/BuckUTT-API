@@ -5,7 +5,6 @@
  */
 
 var APIError = require('../libs').APIError;
-var models   = require('../models');
 
 /**
  * Parse GET params to query options
@@ -16,6 +15,8 @@ var models   = require('../models');
  */
 
 module.exports = function(req, res, next) {
+    var models = req.models;
+
     var query = req.query;
 
     var query_ = {

@@ -5,7 +5,6 @@
  */
 
 var APIError = require('../libs').APIError;
-var models   = require('../models');
 
 
 /**
@@ -19,6 +18,7 @@ var models   = require('../models');
  */
 
 module.exports = function(req, res, next, relationModelName) {
+    var models = req.models;
     var Model = req.Model;
     var modelName = Model.options.name.plural.toLowerCase();
 

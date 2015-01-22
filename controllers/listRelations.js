@@ -7,7 +7,6 @@
 var libs     = require('../libs');
 var APIError = libs.APIError;
 var utils    = libs.utils;
-var models   = require('../models');
 
 
 /**
@@ -18,6 +17,7 @@ var models   = require('../models');
 */
 
 module.exports = function(req, res, next) {
+    var models = req.models;
     var Model = req.Model;
     var relationModel = req.relationModel;
     
