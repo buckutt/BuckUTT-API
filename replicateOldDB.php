@@ -8,13 +8,13 @@ echo "Buckutt - Old buckutt replication\n";
 
 # Remote config
 $host = "127.0.0.1";
-$db   = "buckutt_old_fake";
+$db   = "buckutt_php_demo";
 $user = "root";
 $pwd  = "toor";
 
 # Local config
 $lhost = "127.0.0.1";
-$ldbn   = "buckutt_dev_demo";
+$ldbn   = "buckutt_dev";
 $luser = "root";
 $lpwd  = "toor";
 
@@ -57,23 +57,47 @@ function copyTable ($table, $ltable, $fields) {
         var_dump($db->errorInfo());
         exit();
     }
-    # Fetch with FETCH_ASSOC to prevent numeric indexes
-    while ($row = $response->fetch(PDO::FETCH_ASSOC)) {
-        # Preparing the insert query
-        $reqStr = "INSERT IGNORE INTO " . $ltable . " (" . $newFieldsJoined . ") VALUES (" . $pdoFlags . ")";
-        # Let's make the associative array PDO needs
-        # new fields as keys, old fields" values as data
-        $prepareData = array_combine($newFields, $row);
 
-        # Prepare and do the request
+    $baseReq = "INSERT INTO " . $ltable . " (" . $newFieldsJoined . ") VALUES ";
+
+    $rows = $response->fetchAll(PDO::FETCH_ASSOC);
+    $remaining = count($rows);
+    $perStep = 500;
+
+    do {
+        $toDo = array_splice($rows, 0, $perStep);
+        for ($i = 0; $i < count($toDo); $i++) {
+
+            $values = array_values($toDo[$i]);
+            for ($j = 0; $j < count($values); $j++) {
+                $values[$j] = str_replace('"', "\\\"", $values[$j]);
+                // if ($ltable === "Users" && $values[0] === "4103" && $j === 5) {
+                //     var_dump($values[4]);
+                //     var_dump(str_replace('"', "\\\"", $values[4]));
+                //     exit(0);
+                // }
+            }
+
+            $values = '"' . implode('", "', $values) . '"';
+
+            $toDo[$i] = $values;
+        }
+        $toDo = "(" . implode("), (", $toDo) . ")";
+
+        $req = $baseReq . $toDo;
+
         try {
-            $req = $ldb->prepare($reqStr);
-            $resEx = $req->execute($prepareData);
+            $ldb->exec($req);
         } catch (Exception $e) {
+            var_dump($req);
             var_dump($e->getMessage());
             exit(1);
         }
-    }
+        
+        $remaining = max($remaining - $perStep, 0);
+        echo "Inserted " . $perStep . " into " . $ltable . " remaining " . $remaining . "\n";
+    } while ($remaining > 0);
+
     $response->closeCursor();
 }
 
@@ -125,7 +149,7 @@ copyTable("tj_object_link_oli", "ArticlesLinks", $ArticlesLinks);
 
 # tj_obj_poi_jop/ArticlesPoints
 $ArticlesPoints = array(
-    "obj_id" => "id",
+    "obj_id" => "ArticleId",
     "jop_priority" => "priority",
     "poi_id" => "PointId"
 );
@@ -145,7 +169,7 @@ copyTable("tj_usr_grp_jug", "UsersGroups", $UsersGroups);
 # Added id (autoincrement -> ok)
 # Added isRemoved (default false -> ok)
 $MeanOfLoginsUsers = array(
-    "usr_id" => "id",
+    "usr_id" => "UserId",
     "mol_id" => "MeanOfLoginId",
     "jum_data" => "data"
 );
