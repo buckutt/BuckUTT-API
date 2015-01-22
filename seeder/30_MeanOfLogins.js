@@ -20,7 +20,7 @@ module.exports = function (sequelize) {
         });
         molEtuMail.save().then(function () {
           resolve();
-        })
+        });
       });
     }).catch(function (e) {
       reject(e);
