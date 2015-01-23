@@ -9,7 +9,7 @@
         "password": "",
         "port": "3306",
         "database": "buckutt_dev",
-        "debug" : true
+        "debug": true
     },
     "log" : {
         "level": "debug"
