@@ -56,6 +56,9 @@ module.exports = function(req, res, next) {
 
         query_.order  = order + ' ' + asc;
     }
+    if (query.hasOwnProperty('count')) {
+        query_.count = true;
+    }
 
 
     //Store params
@@ -65,7 +68,7 @@ module.exports = function(req, res, next) {
         if (!(key === 'limit' || key === 'offset' || 
             key === 'order' || key === 'asc' || 
             key === 'findBy' || key === 'embed' ||
-            key === 'instIds')) {
+            key === 'instIds' || key === 'count')) {
 
             //Convert boolean boolean to tinyint(1)
             if (value === 'true'  || value === 'false') {
