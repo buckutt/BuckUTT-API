@@ -75,7 +75,12 @@ module.exports = function(req, res, next) {
                 value = (value === 'true') ? 1 : 0; 
             }
 
-            query_.where[key] = value;
+            //If % or _ are present, convert to like search
+            if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
+                query_.where[key] = { like: value };
+            } else {
+                query_.where[key] = value;
+            }
         }
     }
 
