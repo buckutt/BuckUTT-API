@@ -71,11 +71,6 @@ function copyTable ($table, $ltable, $fields) {
             $values = array_values($toDo[$i]);
             for ($j = 0; $j < count($values); $j++) {
                 $values[$j] = str_replace('"', "\\\"", $values[$j]);
-                // if ($ltable === "Users" && $values[0] === "4103" && $j === 5) {
-                //     var_dump($values[4]);
-                //     var_dump(str_replace('"', "\\\"", $values[4]));
-                //     exit(0);
-                // }
             }
 
             $values = '"' . implode('", "', $values) . '"';
