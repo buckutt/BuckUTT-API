@@ -13,6 +13,14 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING
         },
 
+        website: {
+            type: DataTypes.STRING
+        },
+
+        mail: {
+            type: DataTypes.STRING
+        },
+
         isRemoved: { 
             type: DataTypes.BOOLEAN,
             defaultValue: false 
