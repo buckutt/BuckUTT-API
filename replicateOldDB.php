@@ -1,5 +1,16 @@
 <?php
 
+//////////////////////////////////////////////////////////////////////////////////
+// /!\ When creating the database, please fix Sequelize                         //
+// And change UNIQUE index to INDEX like :                                      //
+// ALTER TABLE `buckutt_dev`.`ArticlesLinks`                                    //
+// DROP INDEX `ArticlesLinks_ParentId_ArticleId_unique`,                        //
+// ADD INDEX `ArticlesLinks_ParentId_ArticleId_index` (`ArticleId`, `ParentId`) //
+// COMMENT '';                                                                  //
+// And do it on ALL links tables                                                //
+// https://github.com/sequelize/sequelize/issues/1485                           //
+//////////////////////////////////////////////////////////////////////////////////
+
 error_reporting(E_ALL);
 echo "Buckutt - Old buckutt replication\n";
 
@@ -31,6 +42,9 @@ try {
 } catch (Exception $e) {
     exit($e->getMessage());
 }
+
+# Disable warnings
+$ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=0;");
 
 do {
     $line = readline("Do you want to truncate the destination database (" .$ldbn . "@" . $lhost . ") [y/n] ");
@@ -95,9 +109,6 @@ function copyTable ($table, $ltable, $fields) {
 
     $response->closeCursor();
 }
-
-# Disable warnings
-$ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=0;");
 
 # Tables truncater
 if ($doTruncate) {
