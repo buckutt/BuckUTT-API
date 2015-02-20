@@ -19,41 +19,57 @@ var utils    = libs.utils;
 module.exports = function(req, res, next) {
     var Model = req.Model;
 
-    if (!Array.isArray(req.body)) {
-        //Handle unique objects
-        req.body = [req.body];
-    }
-
-    Model
-        .bulkCreate(req.body)
-        .success(function(insts) {
-            res.status(201).send();
-        })
-        .error(function(err) {
-            var error;
-            
-            if (err.name === 'SequelizeForeignKeyConstraintError') {
-                error = new APIError(req, 
-                    'ForeignKey constraint error', 
-                    'BAD_FOREIGN_KEY',
-                    500,
-                    { 
-                        error: err
-                    }
-                );   
-
-                return next(error); 
-            }
-
+    function errorCallback (err) {
+        var error;
+        
+        if (err.name === 'SequelizeForeignKeyConstraintError') {
             error = new APIError(req, 
-                'An uncatched error has been throwed', 
-                'UNKNOWN_ERROR',
+                'ForeignKey constraint error', 
+                'BAD_FOREIGN_KEY',
                 500,
                 { 
                     error: err
                 }
-            );
+            );   
 
-            next(error);
+            return next(error); 
+        }
+
+        error = new APIError(req, 
+            'An uncatched error has been throwed', 
+            'UNKNOWN_ERROR',
+            500,
+            { 
+                error: err
+            }
+        );
+
+        next(error);
+    }
+
+    if (!Array.isArray(req.body)) {
+        // Handle unique objects
+        Model
+            .create(req.body)
+            .success(function (inst) {
+                res.json(utils.formatData(inst));
+            }).error(errorCallback);
+    } else {
+        // Handle multiple objects
+        var insts = [];
+        var count = 0;
+        req.body.forEach(function (oneInstance) {
+            Model
+                .create(oneInstance)
+                .success(function (inst) {
+                    insts.push(inst);
+                    ++count;
+
+                    if (count === req.body.length) {
+                        res.json(utils.formatData(insts));
+                        res.status(201);
+                    }
+                }).error(errorCallback);
         });
+    }
 };  
