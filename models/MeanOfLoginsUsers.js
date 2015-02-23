@@ -10,7 +10,7 @@ module.exports = function(sequelize, DataTypes) {
         },
 
         data: {
-            type: DataTypes.INTEGER
+            type: DataTypes.STRING
         },
 
         isRemoved: {
