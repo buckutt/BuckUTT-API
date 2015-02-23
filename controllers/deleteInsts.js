@@ -17,7 +17,7 @@ var APIError = require('../libs').APIError;
 module.exports = function(req, res, next) {
     var Model = req.Model;
 
-    Model.update({ 'isRemoved': true }, req.query.where)
+    Model.update({ 'isRemoved': true }, req.query)
         .success(function() {
             res.json(200);
         })
