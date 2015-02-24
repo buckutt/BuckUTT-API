@@ -24,6 +24,7 @@
   "scripts": {
     "start": "./node_modules/forever/bin/forever start -a -o ./logs/server.log -e ./logs/server.err ./app.js ",
     "stop": "./node_modules/forever/bin/forever stopall ",
+    "dev": "nodemon app.js",
     "test": "./node_modules/mocha/bin/mocha ./test/ --recursive --reporter spec; npm run lint",
     "testw": "./node_modules/mocha/bin/mocha ./test/ --watch --recursive --reporter spec",
     "lint": "echo 'Running jshint...\n'; jshint ./libs ./middlewares ./models ./routes ./test ./models/User.js app.js"
