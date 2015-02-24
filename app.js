@@ -15,38 +15,38 @@ var log            = libs.logManager(module);
 var middlewares    = require('./middlewares');
 var modelsAsync    = require('./models');
 
+
 var app = express()
-  .use(bodyParser.json())
-  .use(morgan('dev'))
-  .use(methodOverride())
-  .use(express.static(path.join(__dirname, './public')));
+    .use(bodyParser.json())
+    .use(morgan('dev'))
+    .use(methodOverride())
+    .use(express.static(path.join(__dirname, './public')));
 
 var router = require('./routes/routes');
 
-modelsAsync().then(function (models) {
-  var seeder = require('./seeder')(models, config.get('seed'));
 
-  models.sequelize
-    .authenticate()
-    .then(seeder)
-    .then(function() {
+modelsAsync()
+    .then(function (models) {
+        var seeder = require('./seeder')(models, config.get('seed'));
 
-      // Sets the this variable to models in the first middleware so that
-      // the next middlewares do not have to promisify all the models
-      var modelsSetter = middlewares.setModels.bind(models);
+        models.sequelize
+            .authenticate()
+            .then(seeder)
+            .then(function() {
+                app
+                    .use(middlewares.setModels(models))
+                    .use('/', router)
+                    .use(middlewares.pageNotFound)
+                    .use(middlewares.internalError)
+                    .listen(config.get('port'));
 
-      app
-        .use(modelsSetter)
-        .use('/', router)
-        .use(middlewares.pageNotFound)
-        .use(middlewares.internalError)
-        .listen(config.get('port'));
+                log.info('Server is listening on %d', config.get('port')); 
+            })
+            .catch(function(err) {
+                throw new Error(err);
+            });
 
-      log.info('Server is listening on %d', config.get('port')); 
-    })
-    .catch(function(err) {
-      throw new Error(err);
     });
 
-});
+
 module.exports = app;
