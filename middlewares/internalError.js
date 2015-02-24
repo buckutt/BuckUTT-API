@@ -5,6 +5,7 @@
  */
 
 var APIError  = require('../libs').APIError;
+var log       = require('../libs').logManager(module);
 
 
 /**
@@ -16,13 +17,15 @@ var APIError  = require('../libs').APIError;
  */
 
 module.exports = function(err, req, res, next) {
-    console.log(err.stack);
+    log.error(err.toString());
     
-    res.status(err.status || 500).json({ 
-        error: {
-            type: err.type,
-            code: err.code,
-            message: err.message
-        }
-    });
+    res
+        .status(err.status || 500)
+        .json({ 
+            error: {
+                type: err.type,
+                code: err.code,
+                message: err.message
+            }
+        });
 };
