@@ -15,7 +15,7 @@ module.exports = function(sequelize, DataTypes) {
 
         type: {
             type: DataTypes.ENUM,
-            values: ['product', 'promotion']
+            values: ['product', 'promotion', 'category']
         },
 
         stock: {
