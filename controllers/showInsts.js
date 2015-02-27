@@ -7,6 +7,7 @@
 var libs     = require('../libs');
 var APIError = libs.APIError;
 var utils    = libs.utils;
+var isInBDE  = require('./isInBDE');
 
 /**
 * Show a model instance
@@ -17,6 +18,18 @@ var utils    = libs.utils;
  
 module.exports = function(req, res, next) {
     var Model = req.Model;
+
+    // Special request to check if the given user is in the BDE
+    if (req.isInBDE && req.Model.name === 'User') {
+        var userid = req.query.where.id[0];
+        var checkingIfUserInBDE = isInBDE(req.models, userid);
+        checkingIfUserInBDE.then(function (isInBDE) {
+            res.json(isInBDE);
+        }).catch(function (err) {
+            next(error);
+        });
+        return;
+    }    
 
     Model.findAll(req.query)
         .success(function(insts) {
