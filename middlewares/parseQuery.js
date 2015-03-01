@@ -57,7 +57,12 @@ module.exports = function(req, res, next) {
         query_.order  = order + ' ' + asc;
     }
     if (query.hasOwnProperty('count')) {
-        query_.count = true;
+        query_.count = true;èèj
+    }
+    if (query.isInBDE) {
+        console.log('Is In BDE : check !');
+        req.isInBDE = true;
+        delete query.isInBDE;
     }
 
 
@@ -68,7 +73,8 @@ module.exports = function(req, res, next) {
         if (!(key === 'limit' || key === 'offset' || 
             key === 'order' || key === 'asc' || 
             key === 'findBy' || key === 'embed' ||
-            key === 'instIds' || key === 'count')) {
+            key === 'instIds' || key === 'count') ||
+            key === 'isInBDE') {
 
             //Convert boolean boolean to tinyint(1)
             if (value === 'true'  || value === 'false') {
