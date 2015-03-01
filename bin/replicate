@@ -1,15 +1,18 @@
-<?php
+#!/usr/bin/php
 
-//////////////////////////////////////////////////////////////////////////////////
-// /!\ When creating the database, please fix Sequelize                         //
-// And change UNIQUE index to INDEX like :                                      //
-// ALTER TABLE `buckutt_dev`.`ArticlesLinks`                                    //
-// DROP INDEX `ArticlesLinks_ParentId_ArticleId_unique`,                        //
-// ADD INDEX `ArticlesLinks_ParentId_ArticleId_index` (`ArticleId`, `ParentId`) //
-// COMMENT '';                                                                  //
-// And do it on ALL links tables                                                //
-// https://github.com/sequelize/sequelize/issues/1485                           //
-//////////////////////////////////////////////////////////////////////////////////
+<?php
+// This script migrate a buckutt db in the ancient format to a new db with the current format.
+// First step: Set the vars below according to this model: $host,db,user,pwd for the old db and $lhost,dbn,user,pwd for the new db
+// [ First* step: If the old db is empty, import a sql file: mysql -u[user] -p [oldDbName] < [pathToSql.sql] ]
+// Third step: configure config.json to have the same settings as the $lhost....pwd vars
+// Forth step: write the new db: node main.js --override=1
+// Fifth step: import data: execute this file => chmod +x ./bin/replicate && ./bin/replicate
+// [ Fifth* step: if it doesn't work, re-execute this file. Why not ? => ./bin/replicate ]
+// Win step: ????
+// Final step: Profit with your seeded database !
+
+# Magic command
+ini_set('memory_limit', '-1');
 
 error_reporting(E_ALL);
 echo "Buckutt - Old buckutt replication\n";
@@ -18,16 +21,16 @@ echo "Buckutt - Old buckutt replication\n";
 # mysql -uroot -ptoor -Nse 'show tables' buckutt_dev_demo | while read table; do mysql -uroot -ptoor -e "truncate table $table" buckutt_dev_demo; done
 
 # Remote config
-$host = "127.0.0.1";
-$db   = "buckutt_php_demo";
+$host = "localhost";
+$db   = "buckutt";
 $user = "root";
-$pwd  = "toor";
+$pwd  = "";
 
 # Local config
-$lhost = "127.0.0.1";
+$lhost = "localhost";
 $ldbn   = "buckutt_dev";
 $luser = "root";
-$lpwd  = "toor";
+$lpwd  = "";
 
 try {
     $db  = new PDO("mysql:host=" . $host . ";dbname=" . $db, $user, $pwd);
@@ -109,6 +112,44 @@ function copyTable ($table, $ltable, $fields) {
 
     $response->closeCursor();
 }
+
+# Foreign key sequelize issue patch
+# https://github.com/sequelize/sequelize/issues/1485   
+                        
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`                                   
+    DROP INDEX `ArticlesLinks_ArticleId_ParentId_unique`,                        
+    ADD INDEX `ArticlesLinks_ArticleId_ParentId_index` (`ArticleId`, `ParentId`) 
+    COMMENT ''; ");
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`                                   
+    DROP INDEX `ArticlesLinks_ParentId_ParentId_unique`,                        
+    ADD INDEX `ArticlesLinks_ParentId_ParentId_index` (`ArticleId`, `ParentId`) 
+    COMMENT ''; ");
+
+
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesPoints`                                   
+    DROP INDEX `ArticlesPoints_PointId_ArticleId_unique`,                        
+    ADD INDEX `ArticlesPoints_PointId_ArticleId_index` (`ArticleId`, `PointId`) 
+    COMMENT ''; ");
+
+
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`MeanOfLoginsUsers`                                   
+    DROP INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_unique`,                        
+    ADD INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_index` (`MeanOfLoginId`, `UserId`) 
+    COMMENT ''; ");
+
+
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersGroups`                                   
+    DROP INDEX `UsersGroups_UserId_GroupId_unique`,                        
+    ADD INDEX `UsersGroups_UserId_GroupId_index` (`GroupId`, `UserId`) 
+    COMMENT ''; ");
+
+
+$ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersRights`                                   
+    DROP INDEX `UsersRights_UserId_RightId_unique`,                        
+    ADD INDEX `UsersRights_UserId_RightId_index` (`RightId`, `UserId`) 
+    COMMENT ''; ");
+
+
 
 # Tables truncater
 if ($doTruncate) {
@@ -345,5 +386,4 @@ foreach ($columns_remover as $table => $field) {
 echo "Done.\n";
 
 $ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=1;");
-
 ?>

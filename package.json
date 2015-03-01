@@ -2,6 +2,9 @@
   "name": "Buckutt",
   "main": "app.js",
   "description": "Systeme de paiement electronique",
+  "bin": {
+    "migrate": "./bin/migrate"
+  },
   "dependencies": {
     "bluebird": "^2.9.13",
     "body-parser": "^1.3.1",
