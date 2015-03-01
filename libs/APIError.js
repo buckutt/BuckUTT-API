@@ -18,7 +18,9 @@ var codes = {
     NOT_LOGGED_IN: 8,
     ACCESS_REQUIRED: 9,
     BAD_FORMAT: 10,
-    BAD_FOREIGN_KEY: 11
+    BAD_FOREIGN_KEY: 11,
+    UNKNOWN_FIELD: 12,
+    BAD_VALUE: 13
 };
 
 
