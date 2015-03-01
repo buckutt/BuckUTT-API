@@ -57,7 +57,7 @@ module.exports = function(req, res, next) {
         query_.order  = order + ' ' + asc;
     }
     if (query.hasOwnProperty('count')) {
-        query_.count = true;èèj
+        query_.count = true;
     }
     if (query.isInBDE) {
         console.log('Is In BDE : check !');
