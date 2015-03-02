@@ -22,11 +22,12 @@ var app = express()
     .use(methodOverride())
     .use(express.static(path.join(__dirname, './public')));
 
-var router = require('./routes/routes');
+var router = require('./routes');
 
 
+// Sync with database, then listen for requests
 modelsAsync()
-    .then(function (models) {
+    .then(function(models) {
         var seeder = require('./seeder')(models, config.get('seed'));
 
         models.sequelize

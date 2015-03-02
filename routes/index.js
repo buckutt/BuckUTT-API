@@ -13,11 +13,10 @@ module.exports = function() {
     var router = express.Router();
     
     //Services
-    // router.use('/services/log', require('./services/log'));
-    router.use('/services/transactions', require('./services/transactions'));
+    router.use('/services', require('./services'));
 
     //Api
-    router.use('/api', require('./api/api'));
+    router.use('/api', require('./api'));
 
 
     return router;
