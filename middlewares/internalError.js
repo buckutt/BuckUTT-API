@@ -17,7 +17,11 @@ var log       = require('../libs').logManager(module);
  */
 
 module.exports = function(err, req, res, next) {
-    log.error(err.toString());
+    if (err.code === APIError.codes["UNKNOWN_ERROR"]) { 
+        log.error(err.extras.error.stack);
+    } else {
+        log.error(err.stack);
+    }
     
     res
         .status(err.status || 500)

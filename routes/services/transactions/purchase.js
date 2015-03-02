@@ -108,7 +108,7 @@ module.exports = function() {
                         purchases.push(purchase);
 
                         // If product is a promotion, add child product as purchases for free
-                        if (item.article.type == "promotion"){
+                        if (item.article.type == "promotion" && item.content){
                             item.content.forEach(function(childProduct) {
                                 var childPurchase = {
                                     date: Date.now(),
@@ -126,15 +126,12 @@ module.exports = function() {
                             });
                         }                        
                     }
-
-                    log.debug('Purchases:');
-                    console.log(purchases);
                 });
 
 
-                if ((buyer.credit < totalPrice) && totalPrice > 0){
-                    var error = new Error(req,
-                            'Buyer has not enough credit',
+                if ((buyer.credit < totalPrice) || totalPrice <= 0){
+                    var error = new APIError(req,
+                            'Buyer has not enough credit or credit is invalid',
                             'BAD_VALUE',
                             500,
                             {
@@ -158,9 +155,10 @@ module.exports = function() {
                     buyer
                         .save()
                         .then(function() {
-                            resolve(purchases)
+                            resolve(purchases);
                         })
                         .catch(function(err) {
+                            log.error('ici');
                             reject(err);
                         });
                 });
@@ -179,10 +177,9 @@ module.exports = function() {
             // Error handling
             .catch(function(err) {
                 var error;
-
                 if (err.name === 'SequelizeForeignKeyConstraintError') {
                     error = new APIError(req, 
-                        'Foreign key constraint error', 
+                        'Foreign key constraint error: ' + err.index, 
                         'BAD_FOREIGN_KEY',
                         500,
                         { 
