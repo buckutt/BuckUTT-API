@@ -18,7 +18,6 @@ var utils    = libs.utils;
 
 module.exports = function(req, res, next) {
     var Model = req.Model;
-    console.log(req.query);
 
     var method = 'findAll';
     if (req.query.count) {
