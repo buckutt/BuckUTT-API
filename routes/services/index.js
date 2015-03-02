@@ -13,6 +13,7 @@ module.exports = function() {
     
     router.use('/log', require('./log'));
     router.use('/transactions', require('./transactions'));
+    router.use('/availableArticles', require('./availableArticles'));
 
     return router;
 }();
