@@ -24,6 +24,9 @@ Promise.promisifyAll(jwt);
  */
 
 module.exports = function(req, res, next) {
+    // For testing purpose, uncomment below
+    //return next();
+    //
     var secret = config.get('jwt').secret;
 
     //Login is the only reason to not have a token
@@ -44,8 +47,6 @@ module.exports = function(req, res, next) {
             500
         );    
         return next(error);
-        // For testing purpose, comment above and uncomment below
-        //next();
     }
 
     var parts = req.headers.authorization.split(' ');

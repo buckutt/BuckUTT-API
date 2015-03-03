@@ -15,6 +15,9 @@ var APIError  = require('../libs').APIError;
  */
 
 module.exports = function(req, res, next) {
+    // For testing purpose, uncomment below
+    // return next();
+    
     //Login is not protected
     if (req.url === '/api/services/login') {
         return next();
@@ -62,6 +65,4 @@ module.exports = function(req, res, next) {
         'ACCESS_REQUIRED',
         401
     ));
-    // For testing purpose, comment above and uncomment below
-    // next();
 };
