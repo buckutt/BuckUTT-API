@@ -1,18 +1,18 @@
 'use strict';
 
+
 /*
     Module dependencies
  */
 
-var express    = require('express');
-var mw         = require('../../middlewares');
-var utils      = require('../../libs').utils;
+var express     = require('express');
+var mw          = require('../../middlewares');
 var controllers = require('../../controllers');
 
 
 module.exports = function() {
-
     var router = express.Router();
+
 
     /*
         Params
@@ -70,6 +70,14 @@ module.exports = function() {
          */
         
         .get(mw.parseQuery, controllers.listRelations);
+
+
+    /**
+     * Services
+     */
+    
+    router.use('/services', require('./services'));
+
 
     return router;
 }();
