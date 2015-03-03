@@ -26,6 +26,11 @@ Promise.promisifyAll(jwt);
 module.exports = function(req, res, next) {
     var secret = config.get('jwt').secret;
 
+    //Login is the only reason to not have a token
+    if (req.url === '/api/services/login') {
+        return next();
+    }
+    
     //A private secret must be set
     if (!secret) {
         throw new Error('config.secret must be set');
@@ -33,7 +38,14 @@ module.exports = function(req, res, next) {
 
     //Authorization header must be set
     if (!(req.headers && req.headers.authorization)) {
-        return next();
+        var error = new APIError(req,
+            'BAD_FORMAT',
+            'No token or scheme provided. Header format is Authorization: Bearer [token]',
+            500
+        );    
+        return next(error);
+        // For testing purpose, comment above and uncomment below
+        //next();
     }
 
     var parts = req.headers.authorization.split(' ');
@@ -67,7 +79,8 @@ module.exports = function(req, res, next) {
     jwt
         .verifyAsync(token, secret)
         .then(function(decoded) {
-            res.json(decoded);
+            req.user = decoded;
+            next();
         })
         .catch(function(err) {
             var error = new APIError(req,

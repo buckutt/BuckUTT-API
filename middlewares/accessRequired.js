@@ -15,15 +15,53 @@ var APIError  = require('../libs').APIError;
  */
 
 module.exports = function(req, res, next) {
-    if (!req.hasAccess) {
-        var error = new APIError(req,
-            'You have no access here',
-            'ACCESS_REQUIRED',
-            401
-        );
-
-        return next(error);
+    //Login is not protected
+    if (req.url === '/api/services/login') {
+        return next();
     }
 
-    next();
+    var rights = req.user.rights || [];
+    var url = req.url;
+    var query = req.query; //middleware.parseQuery's job
+    var method = req.method;
+    var now = Date.now();
+
+    for (var right of rights) {
+        if (Date.parse(right.endDate) > now) {
+
+            /*
+                To add a right, set the condition for it to access it's request.
+                Test if the couple (url, method) is authorized and if the query.params
+                does not contain forbidden values
+             */
+            
+            switch (right.name) {
+                case 'Admin':
+                    return next();
+
+                case 'Treasury':
+                    if (method === 'GET') {
+                        return next();
+                    }
+
+                case 'Seller':
+                    //TODO: add routes for seller
+                    if ((url === '/api/service/purchase' && method === 'POST') ||
+                        ((url === '/api/articles' ||
+                        url === '/api/articleslinks' ||
+                        url === '/api/users') && method === 'GET')) {
+                        return next();
+                    }
+            }  
+        }
+    }
+
+    //Either right is not implemented yet or user doesn't have the right to access
+    return next(new APIError(req,
+        'You have no access here',
+        'ACCESS_REQUIRED',
+        401
+    ));
+    // For testing purpose, comment above and uncomment below
+    // next();
 };

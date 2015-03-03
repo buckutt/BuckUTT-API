@@ -36,6 +36,7 @@ module.exports = function(req, res, next) {
 
         //user exists
         .then(function(user) {
+            //TODO: error if no user
             tokenOptions.issuer = user.id;
             return user.getRights();
         })
