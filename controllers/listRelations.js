@@ -21,8 +21,9 @@ module.exports = function(req, res, next) {
     var Model = req.Model;
     var relationModel = req.relationModel;
     
-    Model.findAll(req.query)
-        .success(function(subInsts) {
+    Model
+        .findAll(req.query)
+        .then(function(subInsts) {
             if (subInsts.length === 0) {
                 return res.json({
                     data: null
@@ -38,14 +39,14 @@ module.exports = function(req, res, next) {
 
             chainer
                 .runSerially()
-                .success(function(results) {
+                .then(function(results) {
                     res.json(utils.formatData(results));
                 })
-                .error(function(error) {
+                .catch(function(error) {
                     next(error);
                 });
         })
-        .error(function(err) {
+        .catch(function(err) {
             var error = new APIError(req, 
                 'An uncatched error has been throwed', 
                 'UNKNOWN_ERROR',

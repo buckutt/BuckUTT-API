@@ -17,11 +17,12 @@ var APIError = require('../libs').APIError;
 module.exports = function(req, res, next) {
     var Model = req.Model;
 
-    Model.update(req.body, req.query)
-        .success(function() {
+    Model
+        .update(req.body, req.query)
+        .then(function() {
             res.json(200);
         })
-        .error(function(err) {
+        .catch(function(err) {
             var error;
 
             if (err.name === 'SequelizeForeignKeyConstraintError') {

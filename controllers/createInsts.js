@@ -51,9 +51,10 @@ module.exports = function(req, res, next) {
         // Handle unique objects
         Model
             .create(req.body)
-            .success(function (inst) {
+            .then(function (inst) {
                 res.json(utils.formatData(inst));
-            }).error(errorCallback);
+            })
+            .catch(errorCallback);
     } else {
         // Handle multiple objects
         var insts = [];
@@ -61,7 +62,7 @@ module.exports = function(req, res, next) {
         req.body.forEach(function (oneInstance) {
             Model
                 .create(oneInstance)
-                .success(function (inst) {
+                .then(function (inst) {
                     insts.push(inst);
                     ++count;
 
@@ -69,7 +70,8 @@ module.exports = function(req, res, next) {
                         res.json(utils.formatData(insts));
                         res.status(201);
                     }
-                }).error(errorCallback);
+                })
+                .catch(errorCallback);
         });
     }
 };  

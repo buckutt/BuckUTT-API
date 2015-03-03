@@ -31,11 +31,13 @@ module.exports = function(req, res, next) {
         return;
     }    
 
-    Model.findAll(req.query)
-        .success(function(insts) {
-            res.json(utils.formatData(insts));
+    Model
+        .findAll(req.query)
+        .then(function(insts) {
+            res.json(insts);
+            // res.json(utils.formatData(insts));
         })
-        .error(function(err) {
+        .catch(function(err) {
             var error = new APIError(req, 
                 'An uncatched error has been throwed', 
                 'UNKNOWN_ERROR',

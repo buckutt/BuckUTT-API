@@ -18,10 +18,10 @@ module.exports = function(req, res, next) {
     var Model = req.Model;
 
     Model.update({ 'isRemoved': true }, req.query)
-        .success(function() {
+        .then(function() {
             res.json(200);
         })
-        .error(function(err) {
+        .catch(function(err) {
             var error = new APIError(req, 
                 'An uncatched error has been throwed', 
                 'UNKNOWN_ERROR',

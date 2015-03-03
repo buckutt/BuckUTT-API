@@ -26,10 +26,10 @@ module.exports = function(req, res, next) {
 
     Model
         [method](req.query)
-        .success(function(insts) {
+        .then(function(insts) {
             res.json(utils.formatData(insts));
         })
-        .error(function(err) {
+        .catch(function(err) {
             var error = new APIError(req, 
                 'An uncatched error has been throwed', 
                 'UNKNOWN_ERROR',

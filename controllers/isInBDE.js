@@ -13,53 +13,58 @@ var Promise = require('bluebird');
 * @return {Function} Bluebird promise
 */
 
-module.exports = function (models, userId) {
-    return new Promise(function (resolve, reject) {
-        models.UsersGroups.findAll({
-            where: {
-                UserId: userId,
-                GroupId: 1
-            }
-        }).success(function (groups) {
-            var isInBDE = false;
-            var currentDate = new Date();
-
-            groups.forEach(function (group) {
-                // If we already got a period which says the user is in BDE
-                // Don't check for the next one
-                if (isInBDE) {
-                    return;
+module.exports = function(models, userId) {
+    return new Promise(function(resolve, reject) {
+        models.UsersGroups
+            .findAll({
+                where: {
+                    UserId: userId,
+                    GroupId: 1
                 }
+            })
+            .then(function(groups) {
+                var isInBDE = false;
+                var currentDate = new Date();
 
-                models.Period.find(group.PeriodId).success(function (period) {
-                    if (period.startDate < currentDate && currentDate < period.endDate) {
-                        isInBDE = true;
-                        resolve(isInBDE);
+                groups.forEach(function(group) {
+                    // If we already got a period which says the user is in BDE
+                    // Don't check for the next one
+                    if (isInBDE) {
+                        return;
                     }
-                }).error(function (err) {
-                    var error = new APIError(req, 
-                        'An uncatched error has been throwed', 
-                        'UNKNOWN_ERROR',
-                        500,
-                        {
-                            error: err
-                        }
-                    );
 
-                    reject(error);
+                    models.Period
+                        .find(group.PeriodId).success(function(period) {
+                            if (period.startDate < currentDate && currentDate < period.endDate) {
+                                isInBDE = true;
+                                resolve(isInBDE);
+                            }
+                        })
+                        .catch(function(err) {
+                            var error = new APIError(req, 
+                                'An uncatched error has been throwed', 
+                                'UNKNOWN_ERROR',
+                                500,
+                                {
+                                    error: err
+                                }
+                            );
+
+                            reject(error);
+                        });
                 });
-            });
-        }).error(function (err) {
-            var error = new APIError(req, 
-                'An uncatched error has been throwed', 
-                'UNKNOWN_ERROR',
-                500,
-                {
-                    error: err
-                }
-            );
+            })
+            .catch(function (err) {
+                var error = new APIError(req, 
+                    'An uncatched error has been throwed', 
+                    'UNKNOWN_ERROR',
+                    500,
+                    {
+                        error: err
+                    }
+                );
 
             reject(error);
-        });
+            });
     });
 };
