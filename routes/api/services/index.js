@@ -14,8 +14,8 @@ module.exports = function() {
 
     router.get('/availableArticles?BuyerId=:BuyerId&PointId=:PointId', controllers.availableArticles);
     router.post('/login', controllers.login);
-    router.post('/transactions/purchase', controllers.purchase);
-    router.post('/transactions/reload', controllers.reload);
+    router.post('/purchase', controllers.purchase);
+    router.post('/reload', controllers.reload);
 
     return router;
 }();
