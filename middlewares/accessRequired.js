@@ -8,10 +8,10 @@ var APIError  = require('../libs').APIError;
 
 
 /**
- * Provide access to accessToken bearers only.
+ * Provide access to users that has the right to
  * @param  {Object}   req  request object
  * @param  {Object}   res  reponse object
- * @param  {Function} next [description]
+ * @param  {Function} next callback for next middleware
  */
 
 module.exports = function(req, res, next) {

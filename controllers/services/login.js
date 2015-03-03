@@ -11,6 +11,7 @@ var config      = libs.configManager;
 var log         = libs.logManager(module);
 var APIError    = libs.APIError;
 var middlewares = require('../../middlewares');
+var jwt         = require('jsonwebtoken');
 
 
 module.exports = function(req, res, next) {
@@ -20,69 +21,70 @@ module.exports = function(req, res, next) {
     var Right = req.models.Right;
     var UsersRights = req.models.UsersRights;
 
-    var rights = [];
+    var secret = config.get('jwt').secret;
     var tokenOptions = { expiresInMinutes: 1440 };
     var token;
 
-    var query = {
+    var opts = {
         where: { 
             id: req.body.UserId
-        }, 
-        include: [{ model: Right, as: 'Rights'}]
+        }
     };
 
     User
-        .find(query)
-        .then(function(user_) {
-            /**
-             * Generate right lists
-             * This pattern is used to fetch all the periods which is
-             * an async operation. 
-             */
-            var periods = [];
+        .find(opts)
 
-            for (var right of user_.Rights) {
-                var opts = {
-                    where: {
-                        id: right.UsersRights.PeriodId
-                    }
-                };
-
-                /* The function(right) is used to preserve the value of right.
-                   It would have been the last value attributed by the loop at the
-                   moment the promise are executed
-                 */
-                periods.push((function(right) {
-                    return new Promise(function(resolve, reject) {
-                        Period
-                            .find(opts)
-                            .then(function(period) {
-                                //Period must be still active for the right
-                                var now = Date.now();
-                                //The right can be added
-                                if (period.startDate <= now && period.endDate > now) {
-                                    rights.push({
-                                        name: right.name,
-                                        FundationId: right.UsersRights.FundationId,
-                                        endDate: period.endDate
-                                    });
-                                }
-                                resolve();
-                            })
-                            .catch(function(err) {
-                                reject(err);
-                            });
-                    });
-                })(right));
-            }
-
-            //All promise are now finished
-            return Promise.all(periods);
+        //user exists
+        .then(function(user) {
+            tokenOptions.issuer = user.id;
+            return user.getRights();
         })
 
-        //All period have been fetchen and the rightList is created
-        .then(function() {
-            res.json(rights);
+        //Epurate the right list to have only useful informations
+        .then(function(rights_) {
+            return new Promise(function(resolve, reject) {
+                //It will contains only right.name, right.period.endDate, and right.point.id
+                var rights = [];
+
+                rights_.forEach(function(right, index) {
+                    var opts = {
+                        where: {
+                            id: right.UsersRights.PeriodId
+                        }
+                    };
+
+                    Period
+                        .find(opts)
+                        .then(function(period) {
+                            //Period must be still active for the right
+                            var now = Date.now();
+                            //The right can be added
+                            if (period.startDate <= now && period.endDate > now) {
+                                rights.push({
+                                    name: right.name,
+                                    PointId: right.UsersRights.PointId,
+                                    endDate: period.endDate
+                                });
+                            }
+
+                            //All periods have been fetched
+                            if (index === rights_.length - 1) {
+                                resolve(rights);
+                            }
+                        })
+                        .catch(function(err) {
+                            reject(err);
+                        });
+                });
+            })
+        })
+
+        /*
+            JWT generation
+         */
+        
+        .then(function(rights) {
+            res.json({ token: jwt.sign({ rights: rights }, secret, tokenOptions) });
         })
 
         //Error handling

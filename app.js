@@ -36,6 +36,7 @@ modelsAsync()
             .then(function() {
                 app
                     .use(middlewares.setModels(models))
+                    .use(middlewares.parseToken)
                     .use('/', router)
                     .use(middlewares.pageNotFound)
                     .use(middlewares.internalError)
