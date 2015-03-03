@@ -26,7 +26,8 @@ module.exports = function(req, res, next) {
     var method = req.method;
     var now = Date.now();
 
-    for (var right of rights) {
+    for (var i in rights) {
+        var right = rights[i];
         if (Date.parse(right.endDate) > now) {
 
             /*
