@@ -6,7 +6,6 @@
  */
 
 var express     = require('express');
-var mw          = require('../../middlewares');
 var controllers = require('../../controllers');
 
 
@@ -29,13 +28,13 @@ module.exports = function() {
             List
          */
         
-        .get(mw.parseQuery, controllers.listInsts)
+        .get(controllers.listInsts)
 
         /*
             Create
          */
         
-        .post(mw.parseQuery, controllers.createInsts);
+        .post(controllers.createInsts);
 
 
     router.route('/:model/:instIds/')
@@ -44,19 +43,19 @@ module.exports = function() {
             Read
          */
         
-        .get(mw.parseQuery, controllers.showInsts)
+        .get(controllers.showInsts)
 
         /*
             Update
          */
         
-        .put(mw.parseQuery, controllers.updateInsts)
+        .put(controllers.updateInsts)
 
         /*
             Delete
          */
         
-        .delete(mw.parseQuery, controllers.deleteInsts);
+        .delete(controllers.deleteInsts);
 
 
     /*
@@ -69,7 +68,7 @@ module.exports = function() {
             List
          */
         
-        .get(mw.parseQuery, controllers.listRelations);
+        .get(controllers.listRelations);
 
 
     /**
