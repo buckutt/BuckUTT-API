@@ -2,7 +2,7 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-    var UsersGroups = sequelize.define('UsersRights', {
+    var UsersRights = sequelize.define('UsersRights', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -19,12 +19,12 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                UsersGroups.belongsTo(models.Period);
-                UsersGroups.belongsTo(models.Fundation);
-                UsersGroups.belongsTo(models.Point);
+                UsersRights.belongsTo(models.Period);
+                UsersRights.belongsTo(models.Fundation);
+                UsersRights.belongsTo(models.Point);
             }
         }
     });
 
-    return UsersGroups;
+    return UsersRights;
 };
