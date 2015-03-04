@@ -17,7 +17,7 @@ var APIError  = require('../libs').APIError;
 module.exports = function(req, res, next) {
     // For testing purpose, uncomment below
     // return next();
-    
+
     //Login is not protected
     if (req.url === '/api/services/login') {
         return next();
@@ -40,7 +40,7 @@ module.exports = function(req, res, next) {
              */
             
             switch (right.name) {
-                case 'Admin':
+                case 'droit_admin':
                     return next();
 
                 case 'Treasury':

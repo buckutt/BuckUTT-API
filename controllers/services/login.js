@@ -36,7 +36,15 @@ module.exports = function(req, res, next) {
 
         //user exists
         .then(function(user) {
-            //TODO: error if no user
+            if (!user) {
+                var error = new APIError(req,
+                    'user not found', 
+                    'ACCESS_REQUIRED',
+                    401
+                );
+
+                return next(error);
+            }
             tokenOptions.issuer = user.id;
             return user.getRights();
         })
@@ -46,6 +54,10 @@ module.exports = function(req, res, next) {
             return new Promise(function(resolve, reject) {
                 //It will contains only right.name, right.period.endDate, and right.point.id
                 var rights = [];
+
+                if (rights_.length === 0) {
+                    return resolve(rights);
+                }
 
                 rights_.forEach(function(right, index) {
                     var opts = {

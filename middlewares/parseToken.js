@@ -25,8 +25,13 @@ Promise.promisifyAll(jwt);
 
 module.exports = function(req, res, next) {
     // For testing purpose, uncomment below
-    //return next();
-    //
+    // return next();
+
+
+    if (!config.get('jwt')) {
+        throw new Error('config.jwt must be set');
+    }
+
     var secret = config.get('jwt').secret;
 
     //Login is the only reason to not have a token
@@ -36,7 +41,7 @@ module.exports = function(req, res, next) {
     
     //A private secret must be set
     if (!secret) {
-        throw new Error('config.secret must be set');
+        throw new Error('config.jwt.secret must be set');
     }
 
     //Authorization header must be set
@@ -51,7 +56,7 @@ module.exports = function(req, res, next) {
 
     var parts = req.headers.authorization.split(' ');
 
-    var format
+    var format;
 
     //Format check
     if (!parts.length === 2) {

@@ -11,7 +11,10 @@
         "database": "buckutt_dev",
         "debug": true
     },
-    "log" : {
+    "log": {
         "level": "debug"
+    },
+    "jwt": {
+        "secret": "thisIsASecret"
     }
 }
