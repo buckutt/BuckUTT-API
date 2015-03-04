@@ -56,7 +56,7 @@ module.exports = function(req, res, next) {
 
     var parts = req.headers.authorization.split(' ');
 
-    var format
+    var format;
 
     //Format check
     if (!parts.length === 2) {
