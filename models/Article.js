@@ -38,8 +38,6 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Article.belongsTo(models.Fundation);
-
                 Article.belongsToMany(Article, { 
                     as: 'Parents', 
                     foreignKey: 'ArticleId',

@@ -30,6 +30,9 @@ module.exports = function(sequelize, DataTypes) {
                 Point.hasMany(models.UsersRights, { 
                     as: 'UsersRights'
                 });
+                Point.hasMany(models.PointsLinks, { 
+                    as: 'PointsLinks'
+                });
             }
         }
     });

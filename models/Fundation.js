@@ -33,7 +33,7 @@ module.exports = function(sequelize, DataTypes) {
             associate: function(models) {
                 Fundation.hasMany(models.Period);
                 Fundation.hasMany(models.Group);
-                Fundation.hasMany(models.Article);
+                Fundation.hasMany(models.Price);
                 Fundation.hasMany(models.UsersRights, { 
                     as: 'UsersRights'
                 });

@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.STRING
         },
 
+        pin: { 
+            type: DataTypes.STRING
+        },
+
         firstname: { 
             type: DataTypes.STRING
         },

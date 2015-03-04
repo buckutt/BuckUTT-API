@@ -2,14 +2,14 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-    var Price = sequelize.define('Price', {
+    var PointsLinks = sequelize.define('PointsLinks', {
         id: { 
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         }, 
 
-        credit: { 
+        device: { 
             type: DataTypes.INTEGER
         },
 
@@ -23,13 +23,10 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Price.belongsTo(models.Article);
-                Price.belongsTo(models.Group);
-                Price.belongsTo(models.Period);
-                Price.belongsTo(models.Fundation);
+                PointsLinks.belongsTo(models.Point);
             }
         }
     });
 
-    return Price;
+    return PointsLinks;
 };
