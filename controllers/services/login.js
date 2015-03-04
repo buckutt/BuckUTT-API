@@ -36,7 +36,15 @@ module.exports = function(req, res, next) {
 
         //user exists
         .then(function(user) {
-            //TODO: error if no user
+            if (!user) {
+                var error = new APIError(req,
+                    'user not found', 
+                    'ACCESS_REQUIRED',
+                    401
+                );
+
+                return next(error);
+            }
             tokenOptions.issuer = user.id;
             return user.getRights();
         })
