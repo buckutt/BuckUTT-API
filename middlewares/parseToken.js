@@ -25,8 +25,8 @@ Promise.promisifyAll(jwt);
 
 module.exports = function(req, res, next) {
     // For testing purpose, uncomment below
-    return next();
-    
+    // return next();
+
 
     if (!config.get('jwt')) {
         throw new Error('config.jwt must be set');
