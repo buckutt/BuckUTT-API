@@ -29,13 +29,12 @@ module.exports = function(req, res, next) {
             next(error);
         });
         return;
-    }    
+    }
 
     Model
         .findAll(req.query)
         .then(function(insts) {
-            res.json(insts);
-            // res.json(utils.formatData(insts));
+            res.json(utils.formatData(insts));
         })
         .catch(function(err) {
             var error = new APIError(req, 
