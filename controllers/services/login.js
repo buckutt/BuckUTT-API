@@ -55,6 +55,10 @@ module.exports = function(req, res, next) {
                 //It will contains only right.name, right.period.endDate, and right.point.id
                 var rights = [];
 
+                if (rights_.length === 0) {
+                    return resolve(rights);
+                }
+
                 rights_.forEach(function(right, index) {
                     var opts = {
                         where: {
