@@ -22,14 +22,14 @@ echo "Buckutt - Old buckutt replication\n";
 
 # Remote config
 $host = "localhost";
-$db   = "buckutt";
-$user = "root";
+$db   = "buckutt_old";
+$user = "";
 $pwd  = "";
 
 # Local config
 $lhost = "localhost";
 $ldbn   = "buckutt_dev";
-$luser = "root";
+$luser = "";
 $lpwd  = "";
 
 try {
@@ -55,6 +55,23 @@ do {
 
 $doTruncate = ($line === 'y') ? true : false;
 
+function moveField ($table, $ltable, $newField, $oldField, $linkField, $oldLinkField) {
+    global $db, $ldb;
+
+    # Select the wanted field
+    $response = $db->query("SELECT * FROM " . $table);
+
+    if ($response === false) {
+        var_dump($db->errorInfo());
+        exit();
+    }
+
+
+    while($rows = $response->fetch(PDO::FETCH_ASSOC)) {
+        $ldb->exec("UPDATE " . $ltable . " SET " . $newField . " = '".$rows[$oldField]."' WHERE " . $linkField. " = '".$rows[$oldLinkField]."'");
+    }
+}
+
 function copyTable ($table, $ltable, $fields) {
     echo "Copying table " . $table . " to " . $ltable . "\n";
     # Get back the PDO variables
@@ -62,6 +79,7 @@ function copyTable ($table, $ltable, $fields) {
 
     $oldFields = array_keys($fields);
     $newFields = array_values($fields);
+
     $oldFieldsJoined = implode(", ", $oldFields);
     $newFieldsJoined = implode(", ", $newFields);
 
@@ -76,7 +94,6 @@ function copyTable ($table, $ltable, $fields) {
     }
 
     $baseReq = "INSERT INTO " . $ltable . " (" . $newFieldsJoined . ") VALUES ";
-
     $rows = $response->fetchAll(PDO::FETCH_ASSOC);
     $remaining = count($rows);
     $perStep = 500;
@@ -89,7 +106,6 @@ function copyTable ($table, $ltable, $fields) {
             for ($j = 0; $j < count($values); $j++) {
                 $values[$j] = str_replace('"', "\\\"", $values[$j]);
             }
-
             $values = '"' . implode('", "', $values) . '"';
 
             $toDo[$i] = $values;
@@ -297,7 +313,6 @@ $Articles = array(
     "obj_stock" => "stock",
     "obj_single" => "isSingle",
     "img_id" => "img_id",
-    "fun_id" => "FundationId",
     "obj_removed" => "isRemoved"
 );
 copyTable("t_object_obj", "Articles", $Articles);
@@ -383,6 +398,10 @@ foreach ($columns_remover as $table => $field) {
     $fieldType = $field[1];
     $ldb->exec("alter table " . $table . " drop column " . $fieldName);
 }
+
+echo "Moving FundationId from t_object_obj to Prices...\n";
+moveField('t_object_obj', 'Prices', 'FundationId', 'fun_id', 'id', 'obj_id');
+
 echo "Done.\n";
 
 $ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=1;");
