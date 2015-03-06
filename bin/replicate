@@ -400,7 +400,7 @@ foreach ($columns_remover as $table => $field) {
 }
 
 echo "Moving FundationId from t_object_obj to Prices...\n";
-moveField('t_object_obj', 'Prices', 'FundationId', 'fun_id', 'id', 'obj_id');
+moveField('t_object_obj', 'Prices', 'FundationId', 'fun_id', 'ArticleId', 'obj_id');
 
 echo "Done.\n";
 
