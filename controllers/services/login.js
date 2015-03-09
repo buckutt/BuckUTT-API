@@ -36,17 +36,18 @@ module.exports = function(req, res, next) {
 
         //user exists
         .then(function(user) {
-            if (!user) {
-                var error = new APIError(req,
-                    'user not found', 
-                    'ACCESS_REQUIRED',
-                    401
-                );
-
-                return next(error);
-            }
-            tokenOptions.issuer = user.id;
-            return user.getRights();
+            return new Promise(function(resolve, reject) {
+                if (!user) {
+                    var error = new APIError(req,
+                        'user not found', 
+                        'ACCESS_REQUIRED',
+                        401
+                    );
+                    return reject(error);
+                }
+                tokenOptions.issuer = user.id;
+                return resolve(user.getRights());
+            });
         })
 
         //Epurate the right list to have only useful informations
@@ -55,8 +56,8 @@ module.exports = function(req, res, next) {
                 //It will contains only right.name, right.period.endDate, and right.point.id
                 var rights = [];
 
-                if (rights_.length === 0) {
-                    return resolve(rights);
+                if (!rights_ || rights_.length === 0) {
+                    return resolve([]);
                 }
 
                 rights_.forEach(function(right, index) {
