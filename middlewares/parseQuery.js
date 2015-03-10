@@ -20,7 +20,8 @@ module.exports = function(req, res, next) {
     var query = req.query;
 
     var query_ = {
-        where: {}
+        where: {},
+        includeWhere: []
     };
 
     //Store options
@@ -85,7 +86,11 @@ module.exports = function(req, res, next) {
             if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
                 query_.where[key] = { like: value };
             } else {
-                query_.where[key] = value;
+                if (key.indexOf('.') > -1) {
+                    query_.includeWhere.push([key, value]);
+                } else {
+                    query_.where[key] = value;
+                }
             }
         }
     }
