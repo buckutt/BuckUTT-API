@@ -16,6 +16,7 @@ module.exports = function() {
     router.post('/login', controllers.login);
     router.post('/purchase', controllers.purchase);
     router.post('/reload', controllers.reload);
+    router.use('/treasury', controllers.treasury);
 
     return router;
 }();

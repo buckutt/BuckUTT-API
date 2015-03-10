@@ -12,6 +12,12 @@ var middlewares = require('../../middlewares');
 
 module.exports = function() {
     var router = express.Router();
+    
+    /**
+     * Services
+     */
+    
+    router.use('/services', require('./services'));
 
 
     /*
@@ -71,12 +77,6 @@ module.exports = function() {
         
         .get(middlewares.parseQuery, controllers.listRelations);
 
-
-    /**
-     * Services
-     */
-    
-    router.use('/services', require('./services'));
 
 
     return router;
