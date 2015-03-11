@@ -24,6 +24,9 @@ module.exports = function(req, res, next) {
         includeWhere: []
     };
 
+    // Store embeds and indexes in include
+    var embeds = {};
+
     //Store options
     if (query.instIds) {
         query_.where.id = query.instIds;
@@ -44,6 +47,7 @@ module.exports = function(req, res, next) {
 
             if (relationModel) {
                 embedModels.push(relationModel);
+                embeds[relationModel.model.name] = embedModels.length - 1;
             }
         });
         query_.include = embedModels;
@@ -79,7 +83,7 @@ module.exports = function(req, res, next) {
 
             //Convert boolean boolean to tinyint(1)
             if (value === 'true'  || value === 'false') {
-                value = (value === 'true') ? 1 : 0; 
+                value = (value === 'true') ? '1' : '0'; 
             }
 
             //If % or _ are present, convert to like search
@@ -87,7 +91,15 @@ module.exports = function(req, res, next) {
                 query_.where[key] = { like: value };
             } else {
                 if (key.indexOf('.') > -1) {
-                    query_.includeWhere.push([key, value]);
+                    var key_ = key.split('.');
+                    console.log(key_);
+                    console.log(embeds);
+                    if (embeds.hasOwnProperty(key_[0])) {
+                        // Get back index in include from embeds
+                        var index = embeds[key_[0]];
+                        query_.include[index].where = {};
+                        query_.include[index].where[key_[1]] = value;
+                    }
                 } else {
                     query_.where[key] = value;
                 }
