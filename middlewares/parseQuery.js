@@ -89,6 +89,14 @@ module.exports = function(req, res, next) {
             //If % or _ are present, convert to like search
             if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
                 query_.where[key] = { like: value };
+            } else if (value.indexOf('>=') === 0) {
+                query_.where[key] = { gte: value.slice(2) };
+            } else if (value.indexOf('<=') === 0) {
+                query_.where[key] = { lte: value.slice(2) };
+            } else if (value.indexOf('>') === 0) {
+                query_.where[key] = { gt: value.slice(1) };
+            } else if (value.indexOf('<') === 0) {
+                query_.where[key]= { lt: value.slice(1) };                
             } else {
                 if (key.indexOf('.') > -1) {
                     var key_ = key.split('.');
