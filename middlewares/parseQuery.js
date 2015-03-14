@@ -64,6 +64,11 @@ module.exports = function(req, res, next) {
     if (query.hasOwnProperty('count')) {
         query_.count = true;
     }
+    if (query.between) {
+        var betweenParts = query.between.split(',');
+
+        query_.where[betweenParts[0]] = { between: [betweenParts[1],betweenParts[2]] };
+    }
     if (query.isInBDE) {
         console.log('Is In BDE : check !');
         req.isInBDE = true;
@@ -78,8 +83,8 @@ module.exports = function(req, res, next) {
         if (!(key === 'limit' || key === 'offset' || 
             key === 'order' || key === 'asc' || 
             key === 'findBy' || key === 'embed' ||
-            key === 'instIds' || key === 'count') ||
-            key === 'isInBDE') {
+            key === 'instIds' || key === 'count' ||
+            key === 'between') || key === 'isInBDE') {
 
             //Convert boolean boolean to tinyint(1)
             if (value === 'true'  || value === 'false') {
