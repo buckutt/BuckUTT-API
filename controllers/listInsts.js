@@ -22,6 +22,8 @@ module.exports = function(req, res, next) {
     var method = 'findAll';
     if (req.query.count) {
         method = 'count';
+        if (req.query.include)
+          req.query.distinct = 'id';
     }
 
     Model
