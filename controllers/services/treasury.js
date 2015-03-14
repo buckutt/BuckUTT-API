@@ -42,10 +42,11 @@ module.exports = function() {
               FROM purchases\
               Inner Join articles ON articles.id = purchases.ArticleId\
               Inner Join points ON points.id = purchases.PointId\
-              WHERE purchases.date between :DateStart and :DateEnd AND ";
-          getPurchases += (req.query.split_promo ? 'articles.`type` =  \'product\'' : 'purchases.price <> 0');
+              WHERE purchases.date between :DateStart and :DateEnd";
+          getPurchases += (req.query.split_promo ? '' : ' AND purchases.price <> 0');
           getPurchases += " AND\
-              purchases.FundationId = :FundationId\
+              purchases.FundationId = :FundationId AND\
+              purchases.isRemoved = 0 AND articles.isRemoved = 0 AND points.isRemoved = 0\
               GROUP BY\
               points.name,\
               purchases.ArticleId,\
@@ -65,7 +66,8 @@ module.exports = function() {
               purchases\
               Inner Join points ON points.id = purchases.PointId\
               Inner Join fundations ON fundations.id = purchases.FundationId\
-              where purchases.date between :DateStart and :DateEnd\
+              where purchases.date between :DateStart AND :DateEnd AND\
+              purchases.isRemoved = 0 AND fundations.isRemoved = 0 AND points.isRemoved = 0\
               GROUP BY\
               purchases.FundationId,\
               purchases.PointId\
@@ -122,7 +124,8 @@ module.exports = function() {
           reloads\
           Inner Join reloadtypes ON reloads.ReloadTypeId = reloadtypes.id\
           Inner Join points ON points.id = reloads.PointId\
-          where reloads.date between :DateStart and :DateEnd\
+          where reloads.date between :DateStart AND :DateEnd AND\
+          reloads.isRemoved = 0 AND points.isRemoved = 0\
           GROUP BY\
           reloads.ReloadTypeId,\
           reloads.PointId\
@@ -215,6 +218,7 @@ module.exports = function() {
           purchases.`date` >=  '2013-12-05 05:53:31' AND\
           purchases.`date` <=  '2013-12-05 19:30:00' AND\
           purchases.FundationId = 3\
+          purchases.isRemoved = 0 AND articles.isRemoved = 0 AND points.isRemoved = 0\
           ORDER BY\
           points.name,\
           purchases.`date`";
