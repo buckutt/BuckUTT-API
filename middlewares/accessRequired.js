@@ -24,7 +24,7 @@ module.exports = function(req, res, next) {
     }
 
     var rights = req.user.rights || [];
-    var url = req.url;
+    var url = req.path;
     var query = req.query; //middleware.parseQuery's job
     var method = req.method;
     var now = Date.now();
@@ -53,7 +53,8 @@ module.exports = function(req, res, next) {
                     if ((url === '/api/service/purchase' && method === 'POST') ||
                         ((url === '/api/articles' ||
                         url === '/api/articleslinks' ||
-                        url === '/api/users') && method === 'GET')) {
+                        url === '/api/users' ||
+                        url === '/api/meanofloginsusers') && method === 'GET')) {
                         return next();
                     }
             }  
