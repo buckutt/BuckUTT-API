@@ -2,7 +2,7 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-    var PointsLinks = sequelize.define('PointsLinks', {
+    var Device = sequelize.define('Device', {
         id: { 
             type: DataTypes.INTEGER,
             primaryKey: true,
@@ -23,10 +23,14 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                PointsLinks.belongsTo(models.Point);
+                Device.belongsToMany(models.Point, { 
+                    as: 'Points', 
+                    foreignKey: 'PointId',
+                    through: models.PointsLinks
+                });
             }
         }
     });
 
-    return PointsLinks;
+    return Device;
 };

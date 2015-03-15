@@ -30,8 +30,10 @@ module.exports = function(sequelize, DataTypes) {
                 Point.hasMany(models.UsersRights, { 
                     as: 'UsersRights'
                 });
-                Point.hasMany(models.PointsLinks, { 
-                    as: 'PointsLinks'
+                Point.belongsToMany(models.Device, { 
+                    as: 'Devices', 
+                    foreignKey: 'DeviceId',
+                    through: models.PointsLinks
                 });
             }
         }
