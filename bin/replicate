@@ -52,11 +52,14 @@ try {
 # Should be executed BEFORE FOREIGN_KEY_CHECKS=0
 # https://bugs.mysql.com/bug.php?id=68148
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
-            DROP INDEX `ArticlesLinks_ArticleId_ParentId_unique`, ADD INDEX `ArticlesLinks_ArticleId_ParentId_index` (`ArticleId`)");
+# Disable warnings
+$ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=1;");
 
 $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
-            DROP INDEX `ArticlesLinks_ParentId_ParentId_unique`, ADD INDEX `ArticlesLinks_ParentId_ParentId_index` (`ParentId`)");
+            DROP INDEX `ArticlesLinks_ParentId_ArticleId_unique`, ADD INDEX `ArticlesLinks_ParentId_ArticleId_index` (`ParentId`, `ArticleId`)");
+
+// $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
+//             DROP INDEX `ArticlesLinks_ParentId_ParentId_unique`, ADD INDEX `ArticlesLinks_ParentId_ParentId_index` (`ParentId`)");
 
 $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesPoints`
             DROP INDEX `ArticlesPoints_PointId_ArticleId_unique`, ADD INDEX `ArticlesPoints_PointId_ArticleId_index` (`ArticleId`, `PointId`)");
@@ -184,57 +187,6 @@ foreach ($columns_remover as $table => $field) {
     }
 }
 echo "Done.\n";
-
-# tj_object_link_oli/ArticlesLinks
-$ArticlesLinks = array(
-    "oli_id"        => "id",
-    "obj_id_parent" => "ParentId",
-    "obj_id_child"  => "ArticleId",
-    "oli_step"      => "step",
-    "oli_removed"   => "isRemoved"
-);
-
-copyTable("tj_object_link_oli", "ArticlesLinks", $ArticlesLinks);
-
-# tj_obj_poi_jop/ArticlesPoints
-$ArticlesPoints = array(
-    "obj_id" => "ArticleId",
-    "jop_priority" => "priority",
-    "poi_id" => "PointId"
-);
-copyTable("tj_obj_poi_jop", "ArticlesPoints", $ArticlesPoints);
-
-# Old fields tj_usr_grp_jug/UsersGroups
-$UsersGroups = array(
-    "jug_id" => "id",
-    "usr_id" => "UserId",
-    "grp_id" => "GroupId",
-    "per_id" => "PeriodId",
-    "jug_removed" => "isRemoved"
-);
-copyTable("tj_usr_grp_jug", "UsersGroups", $UsersGroups);
-
-# Old fields tj_usr_mol_jum/MeanOfLoginsUsers
-# Added id (autoincrement -> ok)
-# Added isRemoved (default false -> ok)
-$MeanOfLoginsUsers = array(
-    "usr_id" => "UserId",
-    "mol_id" => "MeanOfLoginId",
-    "jum_data" => "data"
-);
-copyTable("tj_usr_mol_jum", "MeanOfLoginsUsers", $MeanOfLoginsUsers);
-
-# Old fields tj_usr_rig_jur/UsersRights
-$UsersRights = array(
-    "jur_id" => "id",
-    "usr_id" => "UserId",
-    "rig_id" => "RightId",
-    "per_id" => "PeriodId",
-    "fun_id" => "FundationId",
-    "poi_id" => "PointId",
-    "jur_removed" => "isRemoved"
-);
-copyTable("tj_usr_rig_jur", "UsersRights", $UsersRights);
 
 # Old fields ts_mean_of_login_mol/MeanOfLogins
 $MeanOfLogins = array(
@@ -376,6 +328,57 @@ $ReloadTypes = array(
     "rty_removed" => "isRemoved"
 );
 copyTable("t_recharge_type_rty", "ReloadTypes", $ReloadTypes);
+
+# tj_obj_poi_jop/ArticlesPoints
+$ArticlesPoints = array(
+    "obj_id" => "ArticleId",
+    "jop_priority" => "priority",
+    "poi_id" => "PointId"
+);
+copyTable("tj_obj_poi_jop", "ArticlesPoints", $ArticlesPoints);
+
+# tj_object_link_oli/ArticlesLinks
+$ArticlesLinks = array(
+    "oli_id"        => "id",
+    "obj_id_parent" => "ParentId",
+    "obj_id_child"  => "ArticleId",
+    "oli_step"      => "step",
+    "oli_removed"   => "isRemoved"
+);
+
+copyTable("tj_object_link_oli", "ArticlesLinks", $ArticlesLinks);
+
+# Old fields tj_usr_grp_jug/UsersGroups
+$UsersGroups = array(
+    "jug_id" => "id",
+    "usr_id" => "UserId",
+    "grp_id" => "GroupId",
+    "per_id" => "PeriodId",
+    "jug_removed" => "isRemoved"
+);
+copyTable("tj_usr_grp_jug", "UsersGroups", $UsersGroups);
+
+# Old fields tj_usr_mol_jum/MeanOfLoginsUsers
+# Added id (autoincrement -> ok)
+# Added isRemoved (default false -> ok)
+$MeanOfLoginsUsers = array(
+    "usr_id" => "UserId",
+    "mol_id" => "MeanOfLoginId",
+    "jum_data" => "data"
+);
+copyTable("tj_usr_mol_jum", "MeanOfLoginsUsers", $MeanOfLoginsUsers);
+
+# Old fields tj_usr_rig_jur/UsersRights
+$UsersRights = array(
+    "jur_id" => "id",
+    "usr_id" => "UserId",
+    "rig_id" => "RightId",
+    "per_id" => "PeriodId",
+    "fun_id" => "FundationId",
+    "poi_id" => "PointId",
+    "jur_removed" => "isRemoved"
+);
+copyTable("tj_usr_rig_jur", "UsersRights", $UsersRights);
 
 # Columns remover
 echo "Removing useless columns...\n";

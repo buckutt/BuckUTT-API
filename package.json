@@ -20,7 +20,7 @@
     "mysql": "^2.5.5",
     "nconf": "^0.6.9",
     "orm": "^2.1.22",
-    "sequelize": "2.0.2",
+    "sequelize": "2.0.4",
     "should": "^4.6.5",
     "supertest": "^0.13.0",
     "underscore": "^1.8.2",

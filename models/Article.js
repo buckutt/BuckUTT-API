@@ -44,7 +44,7 @@ module.exports = function(sequelize, DataTypes) {
                     through: models.ArticlesLinks 
                 });
 
-                Article.belongsToMany(Article, { 
+                Article.hasMany(Article, { 
                     as: 'Articles', 
                     foreignKey: 'ParentId',
                     through: models.ArticlesLinks 
