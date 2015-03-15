@@ -55,6 +55,8 @@ module.exports = function(req, res, next) {
                         url === '/api/articleslinks' ||
                         url === '/api/users' ||
                         url === '/api/usersrights' ||
+                        url === '/api/devicespoints' ||
+                        url === '/api/devices' ||
                         url === '/api/meanofloginsusers') && method === 'GET')) {
                         return next();
                     }
