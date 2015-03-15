@@ -52,26 +52,34 @@ try {
 # Should be executed BEFORE FOREIGN_KEY_CHECKS=0
 # https://bugs.mysql.com/bug.php?id=68148
 
-# Disable warnings
-$ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=1;");
+do {
+    $line = readline("Do you want to alter the indexes (" .$ldbn . "@" . $lhost . ") [y/n] ");
+} while ($line !== 'y' && $line !== 'n');
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
-            DROP INDEX `ArticlesLinks_ParentId_ArticleId_unique`, ADD INDEX `ArticlesLinks_ParentId_ArticleId_index` (`ParentId`, `ArticleId`)");
+$doAlter = ($line === 'y') ? true : false;
 
-// $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
-//             DROP INDEX `ArticlesLinks_ParentId_ParentId_unique`, ADD INDEX `ArticlesLinks_ParentId_ParentId_index` (`ParentId`)");
+if ($doAlter) {
+    # Disable warnings
+    $ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=1;");
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesPoints`
-            DROP INDEX `ArticlesPoints_PointId_ArticleId_unique`, ADD INDEX `ArticlesPoints_PointId_ArticleId_index` (`ArticleId`, `PointId`)");
+    $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
+                DROP INDEX `ArticlesLinks_ParentId_ArticleId_unique`, ADD INDEX `ArticlesLinks_ParentId_ArticleId_index` (`ParentId`, `ArticleId`)");
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`MeanOfLoginsUsers`
-            DROP INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_unique`, ADD INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_index` (`MeanOfLoginId`, `UserId`)");
+    // $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesLinks`
+    //             DROP INDEX `ArticlesLinks_ParentId_ParentId_unique`, ADD INDEX `ArticlesLinks_ParentId_ParentId_index` (`ParentId`)");
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersGroups`
-            DROP INDEX `UsersGroups_UserId_GroupId_unique`, ADD INDEX `UsersGroups_UserId_GroupId_index` (`GroupId`, `UserId`)");
+    $ldb->exec("ALTER TABLE `".$ldbn. "`.`ArticlesPoints`
+                DROP INDEX `ArticlesPoints_PointId_ArticleId_unique`, ADD INDEX `ArticlesPoints_PointId_ArticleId_index` (`ArticleId`, `PointId`)");
 
-$ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersRights`
-            DROP INDEX `UsersRights_UserId_RightId_unique`, ADD INDEX `UsersRights_UserId_RightId_index` (`RightId`, `UserId`)");
+    $ldb->exec("ALTER TABLE `".$ldbn. "`.`MeanOfLoginsUsers`
+                DROP INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_unique`, ADD INDEX `MeanOfLoginsUsers_UserId_MeanOfLoginId_index` (`MeanOfLoginId`, `UserId`)");
+
+    $ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersGroups`
+                DROP INDEX `UsersGroups_UserId_GroupId_unique`, ADD INDEX `UsersGroups_UserId_GroupId_index` (`GroupId`, `UserId`)");
+
+    $ldb->exec("ALTER TABLE `".$ldbn. "`.`UsersRights`
+                DROP INDEX `UsersRights_UserId_RightId_unique`, ADD INDEX `UsersRights_UserId_RightId_index` (`RightId`, `UserId`)");
+}
 
 # Disable warnings
 $ldb->exec("SET GLOBAL FOREIGN_KEY_CHECKS=0;");
