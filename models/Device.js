@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
             associate: function(models) {
                 Device.belongsToMany(models.Point, { 
                     as: 'Points', 
-                    foreignKey: 'PointId',
+                    foreignKey: 'DeviceId',
                     through: models.PointsLinks
                 });
             }

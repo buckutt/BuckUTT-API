@@ -32,7 +32,7 @@ module.exports = function(sequelize, DataTypes) {
                 });
                 Point.belongsToMany(models.Device, { 
                     as: 'Devices', 
-                    foreignKey: 'DeviceId',
+                    foreignKey: 'PointId',
                     through: models.PointsLinks
                 });
             }
