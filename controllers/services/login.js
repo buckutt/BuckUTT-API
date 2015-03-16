@@ -19,6 +19,7 @@ var bcrypt      = Promise.promisifyAll(require('bcryptjs'));
 module.exports = function(req, res, next) {
     var sequelize = req.models.sequelize;
     var User = req.models.User;
+    var MeanOfLoginsUsers = req.models.MeanOfLoginsUsers;
     var Period = req.models.Period;
     var Right = req.models.Right;
     var UsersRights = req.models.UsersRights;
@@ -28,13 +29,17 @@ module.exports = function(req, res, next) {
     var connectType;
     var token;
 
-    var opts = {
-        where: { id: req.body.UserId }
-    };
 
+    MeanOfLoginsUsers
+        .find({ where: {
+                MeanOfLoginId: req.body.MeanOfLoginId,
+                data: req.body.data
+            }
+        })
 
-    User
-        .find(opts)
+        .then(function(meanOfLoginUser) {
+            return User.find(meanOfLoginUser.UserId)
+        })
 
         //user exists
         .then(function(user) {
@@ -89,7 +94,6 @@ module.exports = function(req, res, next) {
                 var skipped = 0;
 
                 rights_.forEach(function(right, index) {
-                    console.log(right.name);
                     /* Change right.name to your database convenience, don't commit it..
                        This condition prevent important rights to be added in the JWT if a password
                        is not used
@@ -100,14 +104,10 @@ module.exports = function(req, res, next) {
                         return;
                     }
 
-                    var opts = {
-                        where: {
-                            id: right.UsersRights.PeriodId
-                        }
-                    };
+                    var periodId = right.UsersRights.PeriodId;
 
                     Period
-                        .find(opts)
+                        .find(periodId)
                         .then(function(period) {
                             //Period must be still active for the right
                             var now = Date.now();
