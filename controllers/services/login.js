@@ -13,6 +13,7 @@ var log         = libs.logManager(module);
 var APIError    = libs.APIError;
 var middlewares = require('../../middlewares');
 var jwt         = require('jsonwebtoken');
+var bcrypt      = Promise.promisifyAll(require('bcryptjs'));
 
 
 module.exports = function(req, res, next) {
@@ -28,40 +29,50 @@ module.exports = function(req, res, next) {
     var token;
 
     var opts = {
-        where:
-            Sequelize.and(
-                { id: req.body.UserId },
-                Sequelize.or(
-                    { pin: req.body.password },
-                    { password: req.body.password }
-                )
-            )
+        where: { id: req.body.UserId }
     };
+
 
     User
         .find(opts)
 
         //user exists
         .then(function(user) {
+            //Check pin and password
             return new Promise(function(resolve, reject) {
-                if (!user) {
-                    var error = new APIError(req,
-                        'Invalid creditentials',
-                        'ACCESS_REQUIRED',
-                        401
-                    );
-                    return reject(error);
-                }
+                bcrypt
+                    .compareAsync(req.body.password, user.pin)
+                    .then(function(res) {
+                        if (!res) {
+                            bcrypt
+                                .compareAsync(req.body.password, user.password)
+                                .then(function(res) {
+                                    if (!res) {
+                                        var error = new APIError(req,
+                                            'Invalid creditentials',
+                                            'ACCESS_REQUIRED',
+                                            401
+                                        );
 
-                if (user.pin) {
-                    connectType = 'pin';
-                }
-                else if (user.password) {
-                    connectType = 'password';
-                }
-
-                tokenOptions.issuer = user.id;
-                return resolve(user.getRights());
+                                        return reject(error);
+                                    }
+                                    else {
+                                        connectType = 'password';
+                                        resolve(user.getRights())
+                                    }
+                                })
+                                .catch(function(err) {
+                                    reject(err);
+                                })
+                        }
+                        else {
+                            connectType = 'pin';
+                            resolve(user.getRights());
+                        }
+                    })
+                    .catch(function(err) {
+                        reject(err);
+                    });
             });
         })
 
@@ -75,13 +86,17 @@ module.exports = function(req, res, next) {
                     return resolve([]);
                 }
 
+                var skipped = 0;
+
                 rights_.forEach(function(right, index) {
+                    console.log(right.name);
                     /* Change right.name to your database convenience, don't commit it..
                        This condition prevent important rights to be added in the JWT if a password
                        is not used
                     */
                     if (connectType === 'pin' && (right.name === 'Treasury' ||
-                        right.name === 'Admin' )) {
+                        right.name === 'seller' )) {
+                        skipped++;
                         return;
                     }
 
@@ -106,7 +121,7 @@ module.exports = function(req, res, next) {
                             }
 
                             //All periods have been fetched
-                            if (index === rights_.length - 1) {
+                            if (rights.length + skipped === rights_.length) {
                                 resolve(rights);
                             }
                         })
