@@ -91,28 +91,40 @@ module.exports = function(req, res, next) {
                 value = (value === 'true') ? '1' : '0'; 
             }
 
-            //If % or _ are present, convert to like search
-            if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
-                query_.where[key] = { like: value };
-            } else if (value.indexOf('>=') === 0) {
-                query_.where[key] = { gte: value.slice(2) };
-            } else if (value.indexOf('<=') === 0) {
-                query_.where[key] = { lte: value.slice(2) };
-            } else if (value.indexOf('>') === 0) {
-                query_.where[key] = { gt: value.slice(1) };
-            } else if (value.indexOf('<') === 0) {
-                query_.where[key]= { lt: value.slice(1) };                
-            } else {
-                if (key.indexOf('.') > -1) {
-                    var key_ = key.split('.');
-                    console.log(key_);
-                    console.log(embeds);
-                    if (embeds.hasOwnProperty(key_[0])) {
-                        // Get back index in include from embeds
-                        var index = embeds[key_[0]];
-                        query_.include[index].where = {};
+            if (key.indexOf('.') > -1) {
+                var key_ = key.split('.');
+                if (embeds.hasOwnProperty(key_[0])) {
+                    // Get back index in include from embeds
+                    var index = embeds[key_[0]];
+                    query_.include[index].where = {};
+
+                    //If % or _ are present, convert to like search
+                    if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
+                        query_.include[index].where[key_[1]] = { like: value };
+                    } else if (value.indexOf('>=') === 0) {
+                        query_.include[index].where[key_[1]] = { gte: value.slice(2) };
+                    } else if (value.indexOf('<=') === 0) {
+                        query_.include[index].where[key_[1]] = { lte: value.slice(2) };
+                    } else if (value.indexOf('>') === 0) {
+                        query_.include[index].where[key_[1]] = { gt: value.slice(1) };
+                    } else if (value.indexOf('<') === 0) {
+                        query_.include[index].where[key_[1]] = { lt: value.slice(1) };                
+                    } else {
                         query_.include[index].where[key_[1]] = value;
                     }
+                }
+            } else {
+                //If % or _ are present, convert to like search
+                if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
+                    query_.where[key] = { like: value };
+                } else if (value.indexOf('>=') === 0) {
+                    query_.where[key] = { gte: value.slice(2) };
+                } else if (value.indexOf('<=') === 0) {
+                    query_.where[key] = { lte: value.slice(2) };
+                } else if (value.indexOf('>') === 0) {
+                    query_.where[key] = { gt: value.slice(1) };
+                } else if (value.indexOf('<') === 0) {
+                    query_.where[key] = { lt: value.slice(1) };                
                 } else {
                     query_.where[key] = value;
                 }
