@@ -38,7 +38,7 @@ module.exports = function(req, res, next) {
                 Test if the couple (url, method) is authorized and if the query.params
                 does not contain forbidden values
              */
-            
+
             switch (right.name) {
                 case 'droit_admin':
                     return next();
@@ -60,7 +60,7 @@ module.exports = function(req, res, next) {
                         url === '/api/meanofloginsusers') && method === 'GET')) {
                         return next();
                     }
-            }  
+            }
         }
     }
 

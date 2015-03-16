@@ -5,6 +5,7 @@
     Module dependencies
  */
 
+var Sequelize   = require('sequelize');
 var Promise     = require('bluebird');
 var libs        = require('../../libs');
 var config      = libs.configManager;
@@ -23,12 +24,18 @@ module.exports = function(req, res, next) {
 
     var secret = config.get('jwt').secret;
     var tokenOptions = { expiresInMinutes: 1440 };
+    var connectType;
     var token;
 
     var opts = {
-        where: { 
-            id: req.body.UserId
-        }
+        where:
+            Sequelize.and(
+                { id: req.body.UserId },
+                Sequelize.or(
+                    { pin: req.body.password },
+                    { password: req.body.password }
+                )
+            )
     };
 
     User
@@ -39,12 +46,20 @@ module.exports = function(req, res, next) {
             return new Promise(function(resolve, reject) {
                 if (!user) {
                     var error = new APIError(req,
-                        'user not found', 
+                        'Invalid creditentials',
                         'ACCESS_REQUIRED',
                         401
                     );
                     return reject(error);
                 }
+
+                if (user.pin) {
+                    connectType = 'pin';
+                }
+                else if (user.password) {
+                    connectType = 'password';
+                }
+
                 tokenOptions.issuer = user.id;
                 return resolve(user.getRights());
             });
@@ -61,6 +76,15 @@ module.exports = function(req, res, next) {
                 }
 
                 rights_.forEach(function(right, index) {
+                    /* Change right.name to your database convenience, don't commit it..
+                       This condition prevent important rights to be added in the JWT if a password
+                       is not used
+                    */
+                    if (connectType === 'pin' && (right.name === 'Treasury' ||
+                        right.name === 'Admin' )) {
+                        return;
+                    }
+
                     var opts = {
                         where: {
                             id: right.UsersRights.PeriodId
@@ -96,7 +120,7 @@ module.exports = function(req, res, next) {
         /*
             JWT generation
          */
-        
+
         .then(function(rights) {
             res.json({ token: jwt.sign({ rights: rights }, secret, tokenOptions) });
         })
