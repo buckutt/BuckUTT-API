@@ -118,6 +118,8 @@ module.exports = function(req, res, next) {
                                     PointId: right.UsersRights.PointId,
                                     endDate: period.endDate
                                 });
+                            } else {
+                                skipped++;
                             }
 
                             //All periods have been fetched
