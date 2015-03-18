@@ -98,8 +98,8 @@ module.exports = function(req, res, next) {
                            This condition prevent important rights to be added in the JWT if a password
                            is not used
                         */
-                        var allowed_profils = config.get('pin_login_rights').secret
-                        if (connectType === 'pin' && !allowed_profils.indexOf(right.name)) {
+                        var allowed_profils = config.get('pin_login_rights');
+                        if (connectType === 'pin' && allowed_profils.indexOf(right.name) == -1) {
                             skipped++;
                             return;
                         }
