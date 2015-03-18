@@ -73,7 +73,7 @@ module.exports = function(req, res, next) {
                         );
                     }
                     connectType = (usePassword) ? 'password' : 'pin';
-                    resolve(user.getRights());
+                    resolve(user);
                 }).catch(function(err) {
                     reject(err);
                 });
@@ -81,54 +81,56 @@ module.exports = function(req, res, next) {
         })
 
         //Epurate the right list to have only useful informations
-        .then(function(rights_) {
+        .then(function(user) {
             return new Promise(function(resolve, reject) {
                 //It will contains only right.name, right.period.endDate, and right.point.id
-                var rights = [];
+                user.getRights().then(function (rights_) {
+                    var rights = [];
 
-                if (!rights_ || rights_.length === 0) {
-                    return resolve([]);
-                }
-
-                var skipped = 0;
-
-                rights_.forEach(function(right, index) {
-                    /* Change right.name to your database convenience, don't commit it..
-                       This condition prevent important rights to be added in the JWT if a password
-                       is not used
-                    */
-                    if (connectType === 'pin' && (right.name === 'Treasury' ||
-                        right.name === 'seller' )) {
-                        skipped++;
-                        return;
+                    if (!rights_ || rights_.length === 0) {
+                        return resolve([]);
                     }
 
-                    var periodId = right.UsersRights.PeriodId;
+                    var skipped = 0;
 
-                    Period
-                        .find(periodId)
-                        .then(function(period) {
-                            //Period must be still active for the right
-                            var now = Date.now();
-                            //The right can be added
-                            if (period.startDate <= now && period.endDate > now) {
-                                rights.push({
-                                    name: right.name,
-                                    PointId: right.UsersRights.PointId,
-                                    endDate: period.endDate
-                                });
-                            } else {
-                                skipped++;
-                            }
+                    rights_.forEach(function(right, index) {
+                        /* Change right.name to your database convenience, don't commit it..
+                           This condition prevent important rights to be added in the JWT if a password
+                           is not used
+                        */
+                        if (connectType === 'pin' && (right.name === 'Treasury' ||
+                            right.name === 'seller' )) {
+                            skipped++;
+                            return;
+                        }
 
-                            //All periods have been fetched
-                            if (rights.length + skipped === rights_.length) {
-                                resolve(rights);
-                            }
-                        })
-                        .catch(function(err) {
-                            reject(err);
-                        });
+                        var periodId = right.UsersRights.PeriodId;
+
+                        Period
+                            .find(periodId)
+                            .then(function(period) {
+                                //Period must be still active for the right
+                                var now = Date.now();
+                                //The right can be added
+                                if (period.startDate <= now && period.endDate > now) {
+                                    rights.push({
+                                        name: right.name,
+                                        PointId: right.UsersRights.PointId,
+                                        endDate: period.endDate
+                                    });
+                                } else {
+                                    skipped++;
+                                }
+
+                                //All periods have been fetched
+                                if (rights.length + skipped === rights_.length) {
+                                    resolve({user: user, rights: rights});
+                                }
+                            })
+                            .catch(function(err) {
+                                reject(err);
+                            });
+                    });
                 });
             })
         })
@@ -137,8 +139,10 @@ module.exports = function(req, res, next) {
             JWT generation
          */
 
-        .then(function(rights) {
-            res.json({ token: jwt.sign({ rights: rights }, secret, tokenOptions) });
+        .then(function(re) {
+            delete re.user.pin;
+            delete re.user.password;
+            res.json({ user: re.user, token: jwt.sign({ rights: re.rights }, secret, tokenOptions) });
         })
 
         //Error handling
