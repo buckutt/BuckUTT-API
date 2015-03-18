@@ -16,5 +16,6 @@
     },
     "jwt": {
         "secret": "thisIsASecret"
-    }
+    },
+    "pin_login_rights": ["seller","reloader","point_admin"]
 }

@@ -95,12 +95,12 @@ module.exports = function(req, res, next) {
                     var skipped = 0;
 
                     rights_.forEach(function(right, index) {
-                        /* Change right.name to your database convenience, don't commit it..
+                        /* 
                            This condition prevent important rights to be added in the JWT if a password
                            is not used
                         */
-                        if (connectType === 'pin' && (right.name === 'Treasury' ||
-                            right.name === 'seller' )) {
+                        var allowed_profils = config.get('pin_login_rights').secret
+                        if (connectType === 'pin' && !allowed_profils.indexOf(right.name)) {
                             skipped++;
                             return;
                         }
@@ -125,7 +125,17 @@ module.exports = function(req, res, next) {
 
                                 //All periods have been fetched
                                 if (rights.length + skipped === rights_.length) {
-                                    resolve({user: user, rights: rights});
+                                    if (rights.length > 0) {
+                                        resolve({user: user, rights: rights});
+                                    } else {
+                                        var error = new APIError(req,
+                                            'No valid rights found',
+                                            'ACCESS_REQUIRED',
+                                            401
+                                        );
+
+                                        return reject(error);
+                                    }
                                 }
                             })
                             .catch(function(err) {
