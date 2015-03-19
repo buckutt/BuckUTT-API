@@ -13,23 +13,23 @@ var APIError    = libs.APIError;
 
 
 module.exports = function(req, res, next) {
-    console.log('salut');
     var sequelize = req.models.sequelize;
-    var params = req.params;
+    var params = req.query;
 
     var getPeriods = "SELECT @periods := group_concat(per.id) AS periods\
             FROM Periods per WHERE per.startDate <=  NOW()\
             AND per.endDate >=  NOW() AND per.isRemoved = 0";
 
     var getArticles = "\
-        SELECT article.id, article.name, article.type, article.FundationId, article.stock,\
+        SELECT article.id, article.name, article.type, article.stock,\
                article.isSingle, link.ParentId,\
                (SELECT article_.name\
                 FROM Articles article_\
                 WHERE article_.id = link.ParentId)\
             AS category,\
             MIN(price.credit) \
-            AS price\
+            AS price,\
+            price.FundationId\
             FROM Articles article\
         Left Join ArticlesLinks link\
             ON link.ArticleId = article.id AND link.step = '0' AND link.isRemoved = 0\
@@ -78,3 +78,4 @@ module.exports = function(req, res, next) {
             next(error);
         });
 };
+
