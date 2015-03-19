@@ -66,7 +66,7 @@ module.exports = function(req, res, next) {
 
                 bcryptPromise.then(function(res) {
                     if (!res) {
-                        var error = new APIError(req,
+                        throw error = new APIError(req,
                             'Invalid creditentials',
                             'ACCESS_REQUIRED',
                             401
