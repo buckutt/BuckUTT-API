@@ -12,7 +12,7 @@ var controllers = require('../../../controllers/services');
 module.exports = function() {
     var router = express.Router();
 
-    router.get('/availableArticles?BuyerId=:BuyerId&PointId=:PointId', controllers.availableArticles);
+    router.get('/availableArticles', controllers.availableArticles);
     router.post('/login', controllers.login);
     router.post('/purchase', controllers.purchase);
     router.post('/reload', controllers.reload);

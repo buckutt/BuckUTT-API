@@ -13,6 +13,7 @@ var APIError    = libs.APIError;
 
 
 module.exports = function(req, res, next) {
+    console.log('salut');
     var sequelize = req.models.sequelize;
     var params = req.params;
 
@@ -77,4 +78,3 @@ module.exports = function(req, res, next) {
             next(error);
         });
 };
-
