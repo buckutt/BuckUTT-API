@@ -71,6 +71,7 @@ module.exports = function(req, res, next) {
                             'ACCESS_REQUIRED',
                             401
                         );
+                        return reject(error);
                     }
                     connectType = (usePassword) ? 'password' : 'pin';
                     resolve(user);
