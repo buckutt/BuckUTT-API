@@ -57,7 +57,9 @@ module.exports = function(req, res, next) {
                         url === '/api/usersrights' ||
                         url === '/api/devicespoints' ||
                         url === '/api/devices' ||
-                        url === '/api/meanofloginsusers') && method === 'GET')) {
+                        url === '/api/meanofloginsusers' ||
+                        url === '/api/services/availableArticles' ||
+                        url === '/api/articleslinks') && method === 'GET')) {
                         return next();
                     }
             }
