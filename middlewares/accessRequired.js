@@ -50,7 +50,7 @@ module.exports = function(req, res, next) {
 
                 case 'Seller':
                     //TODO: add routes for seller
-                    if ((url === '/api/service/purchase' && method === 'POST') ||
+                    if ((url === '/api/services/purchase' && method === 'POST') ||
                         ((url === '/api/articles' ||
                         url === '/api/articleslinks' ||
                         url === '/api/users' ||
