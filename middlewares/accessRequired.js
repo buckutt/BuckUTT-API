@@ -50,7 +50,7 @@ module.exports = function(req, res, next) {
 
                 case 'Seller':
                     //TODO: add routes for seller
-                    if ((url === '/api/service/purchase' && method === 'POST') ||
+                    if ((url === '/api/services/purchase' && method === 'POST') ||
                         ((url === '/api/articles' ||
                         url === '/api/articleslinks' ||
                         url === '/api/users' ||
@@ -58,8 +58,19 @@ module.exports = function(req, res, next) {
                         url === '/api/devicespoints' ||
                         url === '/api/devices' ||
                         url === '/api/meanofloginsusers' ||
-                        url === '/api/services/availableArticles' ||
-                        url === '/api/articleslinks') && method === 'GET')) {
+                        url === '/api/services/availableArticles') && method === 'GET')) {
+                        return next();
+                    }
+
+                case 'Reloader':
+                    //TODO: add routes for reloader
+                    if ((url === '/api/services/reload' && method === 'POST') ||
+                        ((url === '/api/users' ||
+                        url === '/api/usersrights' ||
+                        url === '/api/devicespoints' ||
+                        url === '/api/devices' ||
+                        url === '/api/reloadtypes' ||
+                        url === '/api/meanofloginsusers') && method === 'GET')) {
                         return next();
                     }
             }
