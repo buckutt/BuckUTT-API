@@ -20,7 +20,7 @@ module.exports = function(req, res, next) {
     var BuyerId = req.body.BuyerId;
     var OperatorId = req.body.OperatorId;
     var PointId = req.body.PointId;
-    var ReloadTypeId = req.ReloadTypeId;
+    var ReloadTypeId = req.body.ReloadTypeId;
     var credit = req.body.credit;
 
 
