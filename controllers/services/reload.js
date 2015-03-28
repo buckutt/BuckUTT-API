@@ -43,6 +43,7 @@ module.exports = function(req, res, next) {
             trace: "such",
             BuyerId: BuyerId,
             OperatorId: OperatorId,
+            ReloadTypeId: ReloadTypeId,
             PointId: PointId
         })
         // Find User
