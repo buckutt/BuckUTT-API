@@ -30,6 +30,8 @@ module.exports = function(req, res, next) {
             MIN(price.credit) \
             AS price,\
             price.FundationId,\
+            price.id\
+            AS PriceId,\
            (SELECT name\
             FROM Periods\
             WHERE id = price.PeriodId)\
