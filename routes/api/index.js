@@ -41,7 +41,13 @@ module.exports = function() {
             Create
          */
         
-        .post(middlewares.parseQuery, controllers.createInsts);
+        .post(middlewares.parseQuery, controllers.createInsts)
+
+        /*
+            Delete
+         */
+        
+        .delete(middlewares.parseQuery, controllers.deleteInsts);
 
 
     router.route('/:model/:instIds/')
