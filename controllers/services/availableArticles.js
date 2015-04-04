@@ -29,7 +29,13 @@ module.exports = function(req, res, next) {
             AS category,\
             MIN(price.credit) \
             AS price,\
-            price.FundationId\
+            price.FundationId,\
+            price.id\
+            AS PriceId,\
+           (SELECT name\
+            FROM Periods\
+            WHERE id = price.PeriodId)\
+            AS PeriodName\
             FROM Articles article\
         Left Join ArticlesLinks link\
             ON link.ArticleId = article.id AND link.step = '0' AND link.isRemoved = 0\
