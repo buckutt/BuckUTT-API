@@ -89,7 +89,7 @@ module.exports = function(req, res, next) {
                     var rights = [];
 
                     if (!rights_ || rights_.length === 0) {
-                        return resolve([]);
+                        return resolve({user: user, rights: []});
                     }
 
                     var skipped = 0;
