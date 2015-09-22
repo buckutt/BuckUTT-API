@@ -48,7 +48,7 @@ module.exports = function(req, res, next) {
         })
         // Find User
         .then(function(reload) {
-            return User.find({ where: { id: OperatorId } });
+            return User.find({ where: { id: BuyerId } });
         })
         // Add new credit
         .then(function(user) {
