@@ -40,7 +40,7 @@ module.exports = function(req, res, next) {
              */
 
             switch (right.name) {
-                case 'droit_admin':
+                case 'Admin':
                     return next();
 
                 case 'Treasury':
