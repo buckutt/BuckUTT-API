@@ -22,6 +22,10 @@ module.exports = function(req, res, next) {
     if (req.url === '/api/services/login') {
         return next();
     }
+    
+    if (req.user && req.url === '/api/services/transfer') {
+        return next();
+    }
 
     var rights = req.user.rights || [];
     var url = req.path;
