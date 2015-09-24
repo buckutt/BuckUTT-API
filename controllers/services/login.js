@@ -22,7 +22,7 @@ module.exports = function(req, res, next) {
     var MeanOfLoginsUsers = req.models.MeanOfLoginsUsers;
     var Period = req.models.Period;
     var Right = req.models.Right;
-    var UsersRights = req.models.UserersRights;
+    var UsersRights = req.models.UsersRights;
 
     var secret = config.get('jwt').secret;
     var tokenOptions = { expiresInMinutes: 1440 };
