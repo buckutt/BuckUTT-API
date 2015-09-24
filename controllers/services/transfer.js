@@ -61,7 +61,7 @@ module.exports = function (req, res, next) {
         })
         .then(function () {
             var transfer = new Transfer({
-                date: new Date()
+                date: new Date(),
                 amount: amount
             });
 
