@@ -22,16 +22,19 @@ module.exports = function(req, res, next) {
     if (req.url === '/api/services/login') {
         return next();
     }
-    
-    if (req.user && req.url === '/api/services/transfer') {
-        return next();
-    }
 
     var rights = req.user.rights || [];
     var url = req.path;
     var query = req.query; //middleware.parseQuery's job
     var method = req.method;
     var now = Date.now();
+
+    if (req.user && (url === '/api/services/transfer' && method === 'POST') ||
+            ((url === '/api/purchases' ||
+            url === '/api/reloads' ||
+            url === '/api/transfers') && method === 'GET')) {
+        return next();
+    }
 
     for (var i in rights) {
         var right = rights[i];
