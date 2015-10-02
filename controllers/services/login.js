@@ -153,7 +153,7 @@ module.exports = function(req, res, next) {
         .then(function(re) {
             delete re.user.pin;
             delete re.user.password;
-            res.json({ user: re.user, token: jwt.sign({ rights: re.rights }, secret, tokenOptions) });
+            res.json({ user: re.user, token: jwt.sign({ id: re.user.id, rights: re.rights }, secret, tokenOptions) });
         })
 
         //Error handling
