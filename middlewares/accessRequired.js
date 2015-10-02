@@ -30,7 +30,7 @@ module.exports = function(req, res, next) {
     var now = Date.now();
 
     if (req.user && (url === '/api/services/transfer' && method === 'POST') ||
-            (url === '/api/users' && method === 'PUT') ||
+            ((url === '/api/users' || url === '/api/user/' + req.user.id) && method === 'PUT') ||
             ((url === '/api/purchases' ||
             url === '/api/reloads' ||
             url === '/api/transfers' ||
