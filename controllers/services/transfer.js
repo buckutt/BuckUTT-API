@@ -79,7 +79,7 @@ module.exports = function (req, res, next) {
             return selfUser.save();
         })
         .then(function () {
-            transfer = new Transfer({
+            transfer = Transfer.build({
                 date: new Date(),
                 amount: amount
             });
