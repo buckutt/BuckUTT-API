@@ -30,7 +30,7 @@ module.exports = function (req, res, next) {
                 amount: amount
             }
         );
-        return reject(error);
+        return next(error);
     }
 
     if (targetUser.credit + amount > 100 * 100) {
@@ -42,7 +42,7 @@ module.exports = function (req, res, next) {
                 amount: amount
             }
         );
-        return reject(error);
+        return next(error);
     }
 
     User
