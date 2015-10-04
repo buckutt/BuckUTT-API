@@ -81,11 +81,10 @@ module.exports = function (req, res, next) {
         .then(function () {
             transfer = Transfer.build({
                 date: new Date(),
-                amount: amount
+                amount: amount,
+                FromId: selfUser.id,
+                ToId: targetUser.id
             });
-
-            transfer.setFrom(selfUser);
-            transfer.setTo(targetUser);
 
             return transfer.save();
         })
