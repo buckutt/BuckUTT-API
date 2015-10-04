@@ -71,6 +71,15 @@ module.exports = function (req, res, next) {
                     );
                     return reject(error);
                 }
+                
+                if (selfUser.id === targetUser.id) {
+                    var error = new APIError(req,
+                        'Transfer between same user',
+                        'BAD_VALUE',
+                        400
+                    );
+                    return reject(error);
+                }
     
                 targetUser.credit += amount;
     
