@@ -84,6 +84,9 @@ module.exports = function (req, res, next) {
                 amount: amount
             });
 
+            transfer.setFrom(selfUser);
+            transfer.setTo(targetUser);
+
             return transfer.save();
         })
         .then(function () {
