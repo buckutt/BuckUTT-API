@@ -25,7 +25,6 @@ module.exports = function(sequelize, DataTypes) {
         timestamps: false,
         classMethods: {
             associate: function(models) {
-                Transfer.belongsTo(models.Point);
                 Transfer.belongsTo(models.User, {
                     as: 'From',
                     foreignKey: 'FromId'
