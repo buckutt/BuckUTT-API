@@ -34,7 +34,7 @@ module.exports = function(req, res, next) {
             ((url === '/api/purchases' ||
             url === '/api/reloads' ||
             url === '/api/transfers' ||
-            url === '/api/meanofloginsusers'
+            url === '/api/meanofloginsusers' ||
             url === '/api/users') && method === 'GET')) {
         return next();
     }
