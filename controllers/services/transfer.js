@@ -25,53 +25,57 @@ module.exports = function (req, res, next) {
     User
         .find(req.user.id)
         .then(function (user) {
-            selfUser = user;
-
-            if ((!amount && amount !== 0) || selfUser.credit < amount) {
-                var error = new APIError(req,
-                    'From user has not enough credit or credit is invalid',
-                    'BAD_VALUE',
-                    400,
-                    {
-                        selfUser: selfUser.id,
-                        amount: amount
-                    }
-                );
-                return next(error);
-            }
-            
-            return User.find(req.body.userId);
+            return new Promise(function (resolve, reject) {
+                selfUser = user;
+    
+                if ((!amount && amount !== 0) || selfUser.credit < amount) {
+                    var error = new APIError(req,
+                        'From user has not enough credit or credit is invalid',
+                        'BAD_VALUE',
+                        400,
+                        {
+                            selfUser: selfUser.id,
+                            amount: amount
+                        }
+                    );
+                    return reject(error);
+                }
+                
+                User.find(req.body.userId).then(resolve);
+            });
         })
         .then(function (user) {
-            if (!user) {
-                var error = new APIError(req,
-                    'Unknown user',
-                    'BAD_VALUE',
-                    404,
-                    {
-                        amount: req.body.userId
-                    }
-                );
-                return next(error);
-            }
-            
-            targetUser = user;
-
-            if (targetUser.credit + amount > 100 * 100) {
-                var error = new APIError(req,
-                    'To user would have too much money (limit : 100€)',
-                    'BAD_VALUE',
-                    400,
-                    {
-                        amount: amount
-                    }
-                );
-                return next(error);
-            }
-
-            targetUser.credit += amount;
-
-            return targetUser.save();
+            return new Promise(function (resolve, reject) {
+                if (!user) {
+                    var error = new APIError(req,
+                        'Unknown user',
+                        'BAD_VALUE',
+                        404,
+                        {
+                            amount: req.body.userId
+                        }
+                    );
+                    return reject(error);
+                }
+                
+                targetUser = user;
+    
+                if (targetUser.credit + amount > 100 * 100) {
+                    var error = new APIError(req,
+                        'To user would have too much money (limit : 100€)',
+                        'BAD_VALUE',
+                        400,
+                        {
+                            amount: amount
+                        }
+                    );
+                    return reject(error);
+                }
+    
+                targetUser.credit += amount;
+    
+                targetUser.save().then(resolve);
+            });
         })
         .then(function () {
             selfUser.credit -= amount;
