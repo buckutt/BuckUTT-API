@@ -43,6 +43,18 @@ module.exports = function (req, res, next) {
             return User.find(req.body.userId);
         })
         .then(function (user) {
+            if (!user) {
+                var error = new APIError(req,
+                    'Unknown user',
+                    'NOT_FOUND',
+                    404,
+                    {
+                        amount: req.body.userId
+                    }
+                );
+                return next(error);
+            }
+            
             targetUser = user;
 
             if (targetUser.credit + amount > 100 * 100) {
