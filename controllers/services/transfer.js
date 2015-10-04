@@ -7,6 +7,7 @@
 
 var Promise     = require('bluebird');
 var libs        = require('../../libs');
+var utils       = libs.utils;
 var config      = libs.configManager;
 var log         = libs.logManager(module);
 var APIError    = libs.APIError;
@@ -19,6 +20,7 @@ module.exports = function (req, res, next) {
     var amount     = parseInt(req.body.amount, 10);
     var selfUser;
     var targetUser;
+    var transfer;
 
     User
         .find(req.user.id)
@@ -65,14 +67,16 @@ module.exports = function (req, res, next) {
             return selfUser.save();
         })
         .then(function () {
-            var transfer = new Transfer({
+            transfer = new Transfer({
                 date: new Date(),
                 amount: amount
             });
 
             return transfer.save();
         })
-
+        .then(function () {
+            res.json(utils.formatData(transfer));
+        })
         //Error handling
         .catch(function(err) {
             next(err);
