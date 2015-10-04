@@ -46,7 +46,7 @@ module.exports = function (req, res, next) {
             if (!user) {
                 var error = new APIError(req,
                     'Unknown user',
-                    'NOT_FOUND',
+                    'BAD_VALUE',
                     404,
                     {
                         amount: req.body.userId
