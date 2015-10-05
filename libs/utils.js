@@ -68,3 +68,15 @@ module.exports.formatData = function(data) {
 
     return output;
 };
+
+/**
+ * Check if the actual date is in Daylight Saving Time
+ * @return {Boolean} True if summer hour, false if winter hour
+ */
+module.exports.isDST = function () {
+    var today = new Date();
+    var jan = new Date(today.getFullYear(), 0, 1);
+    var jul = new Date(today.getFullYear(), 6, 1);
+    var std = Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+    return today.getTimezoneOffset() < std;
+}
