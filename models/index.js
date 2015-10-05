@@ -19,7 +19,8 @@ var sequelize = new Sequelize(
         host: config.get('mysql').host,
         port: config.get('mysql').port,
         dialect: 'mariadb',
-        logging: (config.get('mysql').debug) ? console.log : false
+        logging: (config.get('mysql').debug) ? console.log : false,
+        timezone: 'Europe/Paris'
     }
 );
 
