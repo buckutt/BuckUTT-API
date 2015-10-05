@@ -10,6 +10,7 @@ var Sequelize = require('sequelize');
 var Promise   = require('bluebird');
 var _         = require('underscore');
 var config    = require('../libs').configManager;
+var isDST     = require('../libs').utils.isDST;
 
 var sequelize = new Sequelize(
     config.get('mysql').database,
@@ -19,7 +20,7 @@ var sequelize = new Sequelize(
         host: config.get('mysql').host,
         port: config.get('mysql').port,
         dialect: 'mariadb',
-	timezone: '+02:00',
+	timezone: (isDST()) ? '+02:00', '+01:00'
         logging: (config.get('mysql').debug) ? console.log : false
     }
 );
