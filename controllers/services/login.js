@@ -105,6 +105,11 @@ module.exports = function(req, res, next) {
                             return;
                         }
 
+                        if (right.UsersRights.isRemoved) {
+                            skipped++;
+                            return;
+                        }
+
                         var periodId = right.UsersRights.PeriodId;
 
                         Period
