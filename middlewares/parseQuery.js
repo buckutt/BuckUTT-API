@@ -96,7 +96,7 @@ module.exports = function(req, res, next) {
                 if (embeds.hasOwnProperty(key_[0])) {
                     // Get back index in include from embeds
                     var index = embeds[key_[0]];
-                    query_.include[index].where = {};
+                    query_.include[index].where = query_.include[index].where || {}; 
 
                     //If % or _ are present, convert to like search
                     if (value.indexOf('%') > -1 || value.indexOf('_') > -1) {
