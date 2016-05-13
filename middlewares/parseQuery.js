@@ -57,8 +57,7 @@ module.exports = function(req, res, next) {
     }
     if (query.order && query.asc) {
         var order = query.order;
-        var asc = Boolean(query.asc) ? 'DESC' : 'ASC';
-
+        var asc = query.asc == 'DESC' ? 'DESC' : 'ASC';
         query_.order  = order + ' ' + asc;
     }
     if (query.hasOwnProperty('count')) {
