@@ -29,7 +29,7 @@ module.exports = function(req, res, next) {
     var method = req.method;
     var now = Date.now();
 
-    if (req.user && (url === '/api/services/transfer' && method === 'POST') ||
+    if (req.user && ((url === '/api/services/transfer' || url === '/api/services/reloadOnline') && method === 'POST') ||
             (url === '/api/users/' + req.user.id && method === 'PUT') ||
             ((url === '/api/purchases' ||
             url === '/api/reloads' ||
