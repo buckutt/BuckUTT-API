@@ -133,13 +133,15 @@ module.exports = function(req, res, next) {
                                     if (rights.length > 0) {
                                         resolve({user: user, rights: rights});
                                     } else {
-                                        var error = new APIError(req,
-                                            'No valid rights found',
-                                            'ACCESS_REQUIRED',
-                                            401
-                                        );
+                                        //var error = new APIError(req,
+                                        //    'No valid rights found',
+                                        //    'ACCESS_REQUIRED',
+                                        //    401
+                                        //);
 
-                                        return reject(error);
+                                        //return reject(error);
+
+                                        resolve({user: user});
                                     }
                                 }
                             })
